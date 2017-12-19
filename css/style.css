@@ -1,0 +1,23 @@
+.navbar-item.is-mega {
+  position: static;
+}
+.navbar-item.is-mega .is-mega-menu-title {
+  margin-bottom: 0;
+  padding: .375rem 1rem;
+}
+
+.hero-body {
+  background-color: #cfcfcf;
+}
+
+.title {
+  color: #234243;
+}
+
+.subtitle {
+  color: #1868b1;
+}
+
+.is-primary {
+  background-color: #cfcfcf;
+}
