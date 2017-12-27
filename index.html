@@ -9,13 +9,15 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.1/css/bulma.min.css">
   <link rel='stylesheet prefetch' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css'>
   <link rel="stylesheet" href="css/style.css">
-
   <link rel="shortcut icon" href="images/favicon-ase.png">
+
+  <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+  <script src="js/index.js"></script>
 
 </head>
 
 <body>
-  <nav class="navbar is-fixed-top">
+  <nav class="navbar is-fixed-top is-flex-desktop">
     <div class="navbar-brand">
       <a class="navbar-item" href="https://rebegin.dyndns.org/ase">
       <img src="images/logo-ase.png" alt="Archery Score Equalify: Helping archers to shoot equal scores" width="28" height="28">
@@ -46,26 +48,26 @@
     <div id="navMenubd-example" class="navbar-menu">
       <div class="navbar-start">
         <div class="navbar-item has-dropdown is-hoverable">
-          <a class="navbar-link  is-active" href="index.html">
+         <a class="navbar-link" href="index.html">
           Archery Score Equalify
         </a>
           <div class="navbar-dropdown ">
-            <a class="navbar-item " href="https://rebegin.dyndns.org/ase/about.html">
+            <a class="navbar-item navpad" href="https://rebegin.dyndns.org/ase/about.html">
             Overview
           </a>
-            <a class="navbar-item is-active" href="https://rebegin.dyndns.org/archery-score-equalify/">
-            Base program
+            <a id="menuHtmlJS" class="navbar-item navpad" href="#">
+            Only Javascript and html5
           </a>
-            <a class="navbar-item " href="https://rebegin.dyndns.org/ase-css">
+            <a class="navbar-item navpad" href="https://rebegin.dyndns.org/ase-css">
             With CSS
           </a>
-            <a class="navbar-item " href="https://rebegin.dyndns.org/ase-bulma">
+            <a class="navbar-item  navpad is-active" href="https://rebegin.dyndns.org/ase-bulma">
             Bulma
           </a>
-            <a class="navbar-item " href="https://rebegin.dyndns.org/ase-bulma-vue">
+            <a class="navbar-item navpad" href="https://rebegin.dyndns.org/ase-bulma-vue">
             Bulma & Vue.js
           </a>
-            <a class="navbar-item " href="https://rebegin.dyndns.org/ase-quasar">
+            <a class="navbar-item navpad" href="https://rebegin.dyndns.org/ase-quasar">
             Quasar
           </a>
 
@@ -84,24 +86,35 @@
             </div>
           </div>
         </div>
-
+<hr class="is-paddingless is-marginless"  style="background-color:light-gray;">
+<a class="navbar-item " href="others.html">
+  <span>Other projects</span>
+</a>
         <a class="navbar-item " href="aboutme.html">
-          <span>&nbsp;About Me</span>
+          <span>About Me</span>
         </a>
       </div>
-
+<hr class="is-paddingless is-marginless" style="background-color:light-blue;">
 
       <div class="navbar-end">
-        <div class="field is-grouped">
+   <!--     <div class="field is-grouped">
         <a class="navbar-item" href="https://github.com/zajnemzaj/archery-score-equalify" target="_blank">
           <span class="icon" style="color: #333;"><i class="fa fa-github"></i></span>
         </a>
         <a class="navbar-item" href="https://www.last.fm/user/rebegin" target="_blank">
           <span class="icon" style="color: #000000;"><i class="fa fa-lastfm"></i></span>
-        </a>
+        </a> -->
 
         <div class="navbar-item">
           <div class="field is-grouped">
+            <p class="control">
+              <a class="button is-light" href="https://github.com/zajnemzaj/archery-score-equalify/archive/master.zip">
+              <span class="icon">
+                <i class="fa fa-github"></i>
+              </span>
+              <span>Github</span>
+            </a>
+            </p>
             <p class="control">
               <a class="button is-light" href="https://github.com/zajnemzaj/archery-score-equalify/archive/master.zip">
               <span class="icon">
@@ -110,13 +123,21 @@
               <span>Download</span>
             </a>
             </p>
+            <p class="control">
+              <a class="button is-light" href="#">
+              <span class="icon">
+                <i class="fa fa-sign-in"></i>
+              </span>
+              <span>Login</span>
+            </a>
+            </p>
           </div>  <!-- field is-grouped -->
         </div> <!-- navbar-item -->
-      </div> <!-- field is-grouped -->
+    <!--  </div> <!-- field is-grouped -->
     </div> <!-- navbar-end -->
   </div> <!-- navbar-menu -->
   </nav>
-  <section class="hero">
+  <!-- <section class="hero">
     <div class="hero-body">
       <div class="container">
         <h1 class="title">
@@ -127,10 +148,14 @@
       </h2>
       </div>
     </div>
-  </section>
-
-  <script src="js/index.js"></script>
-
+  </section> -->
+  <div id="nav-placeholder"></div>
+  <script>
+    $(document).ready(function(){
+      $('#menuHtmlJS').click(function(){
+        $("#nav-placeholder").load("../archery-score-equalify/index.html");
+     });
+    });
+  </script>
 </body>
-
 </html>
