@@ -12,7 +12,6 @@
   <link rel="shortcut icon" href="images/favicon-ase.png">
 
   <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-  <script src="js/index.js"></script>
 
 </head>
 
@@ -38,7 +37,7 @@
             </span>
           </a> -->
 
-      <div class="navbar-burger burger" data-target="navMenubd-example">
+      <div id="navBurger" class="navbar-burger burger" data-target="navMenubd-example">
         <span></span>
         <span></span>
         <span></span>
@@ -55,7 +54,7 @@
             <a class="navbar-item navpad" href="https://rebegin.dyndns.org/ase/about.html">
             Overview
           </a>
-            <a id="menuHtmlJS" class="navbar-item navpad" href="#">
+            <a id="ase-pure-html-js" class="navbar-item navpad" href="#ase-pure-html-js.html">
             Only Javascript and html5
           </a>
             <a class="navbar-item navpad" href="https://rebegin.dyndns.org/ase-css">
@@ -87,10 +86,10 @@
           </div>
         </div>
 <hr class="is-paddingless is-marginless"  style="background-color:light-gray;">
-<a class="navbar-item " href="others.html">
+<a class="navbar-item" href="others.html">
   <span>Other projects</span>
 </a>
-        <a class="navbar-item " href="aboutme.html">
+        <a class="navbar-item" href="aboutme.html">
           <span>About Me</span>
         </a>
       </div>
@@ -107,6 +106,14 @@
 
         <div class="navbar-item">
           <div class="field is-grouped">
+          <p class="control">
+            <a class="button is-light" href="https://github.com/zajnemzaj/archery-score-equalify/archive/master.zip">
+            <span class="icon">
+              <i class="fa fa-download"></i>
+            </span>
+            <span>Download</span>
+          </a>
+          </p>
             <p class="control">
               <a class="button is-light" href="https://github.com/zajnemzaj/archery-score-equalify/archive/master.zip">
               <span class="icon">
@@ -116,11 +123,11 @@
             </a>
             </p>
             <p class="control">
-              <a class="button is-light" href="https://github.com/zajnemzaj/archery-score-equalify/archive/master.zip">
+              <a class="button is-light" href="#">
               <span class="icon">
-                <i class="fa fa-download"></i>
+                <i class="fa fa-codepen"></i>
               </span>
-              <span>Download</span>
+              <span>CodePen</span>
             </a>
             </p>
             <p class="control">
@@ -152,10 +159,18 @@
   <div id="nav-placeholder"></div>
   <script>
     $(document).ready(function(){
-      $('#menuHtmlJS').click(function(){
-        $("#nav-placeholder").load("../archery-score-equalify/index.html");
+      $('#ase-pure-html-js').click(function(){
+      // $('.navbar-item').click(function(){
+        $("#nav-placeholder").load("ase-pure-html-js.html"); // Load html page
+        $("#navBurger").toggleClass('is-active'); // toggle burger back to default
+        $("#navMenubd-example").toggleClass('is-active'); // hide menu
+
+        $(".navbar-item").removeClass('is-active'); // remove is-active class from all menu-item
+        $("#ase-pure-html-js").toggleClass('is-active'); // add is-active class to actual menu item
      });
     });
   </script>
+
+  <script src="js/index.js"></script>
 </body>
 </html>

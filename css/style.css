@@ -30,3 +30,7 @@
 hr {
 	padding: 0em;
 }
+
+#nav-placeholder {
+  padding: 4em .5em;
+}
