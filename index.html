@@ -57,13 +57,13 @@
             <a id="ase-pure-html-js" class="navbar-item navpad" href="#ase-pure-html-js.html">
             Only Javascript and html5
           </a>
-            <a class="navbar-item navpad" href="https://rebegin.dyndns.org/ase-css">
+            <a id="ase-with-css" class="navbar-item navpad" href="#ase-with-css.html">
             With CSS
           </a>
-            <a class="navbar-item  navpad is-active" href="https://rebegin.dyndns.org/ase-bulma">
+            <a id="ase-bulma" class="navbar-item navpad" href="#ase-bulma.html">
             Bulma
           </a>
-            <a class="navbar-item navpad" href="https://rebegin.dyndns.org/ase-bulma-vue">
+            <a class="navbar-item navpad is-active" href="https://rebegin.dyndns.org/ase-bulma-vue">
             Bulma & Vue.js
           </a>
             <a class="navbar-item navpad" href="https://rebegin.dyndns.org/ase-quasar">
@@ -119,7 +119,7 @@
               <span class="icon">
                 <i class="fa fa-github"></i>
               </span>
-              <span>Github</span>
+              <span>GitHub</span>
             </a>
             </p>
             <p class="control">
@@ -167,6 +167,24 @@
 
         $(".navbar-item").removeClass('is-active'); // remove is-active class from all menu-item
         $("#ase-pure-html-js").toggleClass('is-active'); // add is-active class to actual menu item
+     });
+      $('#ase-with-css').click(function(){
+      // $('.navbar-item').click(function(){
+        $("#nav-placeholder").load("ase-with-css.html"); // Load html page
+        $("#navBurger").toggleClass('is-active'); // toggle burger back to default
+        $("#navMenubd-example").toggleClass('is-active'); // hide menu
+
+        $(".navbar-item").removeClass('is-active'); // remove is-active class from all menu-item
+        $("#ase-with-css").toggleClass('is-active'); // add is-active class to actual menu item
+     });
+      $('#ase-bulma').click(function(){
+      // $('.navbar-item').click(function(){
+        $("#nav-placeholder").load("ase-bulma.html"); // Load html page
+        $("#navBurger").toggleClass('is-active'); // toggle burger back to default
+        $("#navMenubd-example").toggleClass('is-active'); // hide menu
+
+        $(".navbar-item").removeClass('is-active'); // remove is-active class from all menu-item
+        $("#ase-bulma").toggleClass('is-active'); // add is-active class to actual menu item
      });
     });
   </script>

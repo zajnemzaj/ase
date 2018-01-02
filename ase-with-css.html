@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Arrows OOJS v0.0.0.0.3</title>
+  <link rel="stylesheet" href="css/accordion.css">
+<!--   <link rel="stylesheet" href="css/style.css"> -->
+</head>
+
+<body>
+    <div class="tab">
+      <input class="tab-input" id="tab-one" type="checkbox" name="tabs">
+      <label class="tab-label" for="tab-one">Usage</label>
+      <div class="tab-content">
+        <p>Please enter the average scores of each archer. After calculating the diameters for each archer, you can download the PDF with targetfaces optimized to shoot equal scores. The lowest scorer shots to 40 cm diameter targetface.</p>
+      </div>
+    </div>
+  <label for="inputLowScore">Lower score:</label>
+  <input type="text" id="inputLowScore" value="245">
+  <br>
+  <label for="inputHighScore">Higher score:</label>
+  <input type="text" id="inputHighScore" value="285">
+  <br>
+  <label for="inputGrouping">Average radius of grouping for high-scorer on 40cm targetface (mm):</label>
+  <input type="text" id="inputGrouping" value="">
+  <br>
+  <label for="inputFinalRadius">Suggested radius of targetface to download for high score archer (mm):</label>
+  <input type="text" id="inputFinalRadius" value="">
+  <br>
+  <button type="button" id="buttonGetGrouping" onclick="targetFace.getRoundDiamAverages()">Find grouping size</button>
+  <button type="button" id="buttonGetTargetSize" onclick="targetFace.getTargetSize()">Calculate target size</button>
+  <button type="button" id="buttonClearChart" onclick="targetFace.clearCanvasChart(ctx1rst,ctx1rstChart)">Clear canvas</button>
+  <br>
+    <canvas id="canvas1rstTargetFace" width="400" height="400" style="border:1px solid #d3d3d3;">
+      Your browser does not support the canvas element.
+    </canvas>
+    <canvas id="canvas1rstStats" width="400" height="300" style="border:1px solid #d3d3d3;">
+      Your browser does not support the canvas element.
+    </canvas>
+  <div id="tmpOutput"></div>
+<script src="js/ase-pure.js"></script>
+</body>
+</html>
