@@ -1,43 +1,184 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>Arrows OOJS v0.0.0.0.3</title>
   <link rel="stylesheet" href="css/accordion.css">
-<!--   <link rel="stylesheet" href="css/style.css"> -->
+  <link rel="stylesheet" href="css/ase-bulma.css">
 </head>
 
 <body>
+  <div class="container">
     <div class="tab">
       <input class="tab-input" id="tab-one" type="checkbox" name="tabs">
-      <label class="tab-label" for="tab-one">Usage Help</label>
+      <label class="tab-label" for="tab-one">Usage Help</label>
       <div class="tab-content">
-        <p>Please enter the average scores of the archers. After calculating the diameters for each archer, you can download the PDF with targetfaces optimized to shoot equal scores. The lowest scorer shots to 40 cm diameter targetface.</p>
+        <p>
+            - Please enter the average scores of the archers (their names are optional but useful as it is printed on the targetfaces).<br>
+            - You can download the PDF right after the scroes are entered or you can finetune the diameters by hand if desired.<br>
+            - The generated PDF will contain targetfaces optimized for each archer to shoot equal scores.<br>
+            - Take care when printing to use the sizes from PDF file without rescaling it (LibreOffice Draw can print it correctly if you click on File -> Print... -> LibreOffice Draw -> Size -> Original size).<br>
+            - The lowest scorer always shoots to the official 20 cm radius targetface used in World Archery 18m indoor competitions.
+        </p>
       </div>
     </div>
-  <label for="inputLowScore">Lower score:</label>
-  <input type="text" id="inputLowScore" value="245">
-  <br>
-  <label for="inputHighScore">Higher score:</label>
-  <input type="text" id="inputHighScore" value="285">
-  <br>
-  <label for="inputGrouping">Average radius of grouping for high-scorer on 40cm targetface (mm):</label>
-  <input type="text" id="inputGrouping" value="">
-  <br>
-  <label for="inputFinalRadius">Suggested radius of targetface to download for high score archer (mm):</label>
-  <input type="text" id="inputFinalRadius" value="">
-  <br>
-  <button type="button" id="buttonGetGrouping" onclick="targetFace.getRoundDiamAverages()">Find grouping size</button>
-  <button type="button" id="buttonGetTargetSize" onclick="targetFace.getTargetSize()">Calculate target size</button>
-  <button type="button" id="buttonClearChart" onclick="targetFace.clearCanvasChart(ctx1rst,ctx1rstChart)">Clear canvas</button>
-  <br>
+
+    <div class="field is-horizontal has-addons has-addons-centered">
+
+      <!-- <div class="field-label is-normal">
+        <label class="label" for="inputLowScore">Lowest score:</label>
+      </div> -->
+      <div class="field-body">
+        <div class="control">
+          <input class="input" type="text" id="inputArcherName1" placeholder="1. Archer's Name">
+        </div>
+        <div class="columns is-mobile is-variable is-1">
+          <div class="control column">
+            <input class="input input-narrow" type="text" id="inputLowScore" placeholder="Score" value="245">
+          </div>
+          <div class="control column">
+            <input class="input input-narrow" type="text" id="inputLowScore" placeholder="Avg. radius" disabled>
+          </div>
+          <div class="control column">
+            <input class="input input-narrow" type="text" id="inputLowScore" placeholder="Sug. radius" disabled>
+          </div>
+          <div class="control column">
+            <a class="button" id="buttonAddNewArcher" onclick="">Add new archer</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="field is-horizontal has-addons has-addons-centered">
+      <!-- <div class="field-label is-normal">
+        <label class="label" for="inputHighScore">Highest score:</label>
+      </div> -->
+      <div class="field-body">
+        <div class="control">
+          <input class="input" type="text" id="inputArcherName2" placeholder="2. Archer's Name">
+        </div>
+        <div class="columns is-mobile is-variable is-1">
+          <div class="control column">
+            <input class="input input-narrow" type="text" id="inputHighScore" placeholder="Score" value="285">
+          </div>
+          <div class="control column">
+            <input class="input input-narrow" type="text" id="inputLowScore" placeholder="Avg. radius" disabled>
+          </div>
+          <div class="control column">
+            <input class="input input-narrow" type="text" id="inputLowScore" placeholder="Sug. radius" disabled>
+          </div>
+          <!-- <div class="control column">
+            <a class="button" id="buttonRemoveArcher3" onclick="">Remove archer</a>
+          </div> -->
+        </div>
+      </div>
+    </div>
+
+    <div class="archerPlaceholder"></div>
+
+    <div class="field is-horizontal has-addons">
+      <div class="field-label is-normal">
+        <label class="label" for="inputGrouping">Average radius of grouping for high-scorer on 40cm targetface (mm):</label>
+      </div>
+      <div class="field-body">
+        <div class="control">
+          <input class="input" type="text" id="inputGrouping" value="">
+        </div>
+        <div class="control">
+          <a class="button is-link" id="buttonGetGrouping" onclick="targetFace.getRoundDiamAverages()">Find grouping sizes</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="field is-horizontal has-addons">
+      <div class="field-label is-normal">
+        <label class="label" for="inputFinalRadius">Suggested radius of targetface to download for high score archer (mm):</label>
+      </div>
+      <div class="field-body">
+        <div class="control">
+          <input class="input" type="text" id="inputFinalRadius" value="">
+        </div>
+        <div class="control">
+          <a class="button is-link" id="buttonGetTargetSize" onclick="targetFace.getTargetSize()">Calculate target sizes</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- <button class="button is-link" type="button" id="buttonGetGrouping" onclick="targetFace.getRoundDiamAverages()">Find grouping size</button>
+  <button class="button is-info" type="button" id="buttonGetTargetSize" onclick="targetFace.getTargetSize()">Calculate target size</button> -->
+
+    <!-- <button class="button is-danger" type="button" id="buttonClearChart" onclick="targetFace.clearCanvasChart(ctx1rst,ctx1rstChart)">Clear canvas</button> -->
+
+    <div class="field is-horizontal has-addons">
+      <div class="field-label is-normal">
+        <label class="label" for="inputFileName">File name:</label>
+      </div>
+      <div class="field-body">
+        <div class="control">
+          <input class="input" type="text" id="inputFileName" value="targetface.pdf">
+        </div>
+        <div class="control">
+          <!-- <button class="button is-success" type="button" id="buttonSavePdf" onclick="">Save PDF</button> -->
+          <a class="button is-success" id="buttonSavePdf" onclick="">Save PDF</a>
+        </div>
+      </div>
+    </div>
+
     <canvas id="canvas1rstTargetFace" width="400" height="400" style="border:1px solid #d3d3d3;">
       Your browser does not support the canvas element.
     </canvas>
     <canvas id="canvas1rstStats" width="400" height="300" style="border:1px solid #d3d3d3;">
       Your browser does not support the canvas element.
     </canvas>
-  <div id="tmpOutput"></div>
-<script src="js/ase-pure.js"></script>
+    <div id="tmpOutput"></div>
+    <script src="js/ase-pure.js"></script>
+  </div>
+  <!-- container -->
+  <!-- <div id="newArcherScript" style="display: none;">ID of this div is: ' + id + '<br></div> -->
+  <script>
+  	var id = 2;
+    $('#buttonAddNewArcher').on('click', function() {
+
+     // var count = $('div.archerPlaceholder div').length+3,
+       // id = count + Math.floor(Math.random() * 100);
+    // id = count++;
+    id++;
+  /* var instertedArcher = '<div id="divInstertedArcher">' +
+        'ID of this div is: '+ id +' <br></div>'; */
+       /*    var instertedArcher = `<div id="divInstertedArcher">
+        ID of this div is:  ${id}<br></div>`; */
+             var instertedArcher = `
+<div class="field is-horizontal has-addons has-addons-centered">
+      <!-- <div class="field-label is-normal">
+        <label class="label" for="inputHighScore">Highest score:</label>
+      </div> -->
+      <div class="field-body">
+        <div class="control">
+          <input class="input" type="text" id="inputArcherName${id}" placeholder="${id}. Archer's Name">
+        </div>
+        <div class="columns is-mobile is-variable is-1">
+          <div class="control column">
+            <input class="input input-narrow" type="text" id="inputScore${id}" placeholder="Score" value="">
+          </div>
+          <div class="control column">
+            <input class="input input-narrow" type="text" id="inputAvgScore${id}" placeholder="Avg. radius" disabled>
+          </div>
+          <div class="control column">
+            <input class="input input-narrow" type="text" id="inputSugScore${id}" placeholder="Sug. radius" disabled>
+          </div>
+          <div class="control column">
+            <a class="button" id="buttonRemoveArcher${id}" onclick="">Remove ${id}. archer</a>
+          </div>
+        </div>
+      </div>
+    </div>
+`;
+      // $('div.archerPlaceholder').append('<div id="' + id + '">ID of this div is: ' + id + ' </div>');
+      //$('div.archerPlaceholder').append($("#newArcherScript").html());
+      $('div.archerPlaceholder').append(instertedArcher);
+  });
+  </script>
 </body>
+
 </html>
