@@ -18,7 +18,7 @@ function getRandomNumber(maxNo) {
 // Our targetFace object
 var targetFace = {
   size : 400, // size of targetface in mm
-  arrowCount : 0, // No of arrows shot
+  arrowCount : 0, // No of arrows shot
   sumOfBigTarget : 0,
   roundCount : 0,
 
@@ -67,11 +67,11 @@ var targetFace = {
    */
   getTFOneScore : function(maxRadius,targetfaceRadius) {
     var x = 0,
-        y = 0,
+        y = 0,
         drawx = 0,
         drawy = 0,
         distanceFromCenter = 0,
-        scoreRadius = targetfaceRadius/10, // starting with 10 ring which has 20mm radius (400/20) on 40cm targetface
+        scoreRadius = targetfaceRadius/10, // starting with 10 ring which has 20mm radius (400/20) on 40cm targetface
         scoreValue = 10; // starting score value
     do {
       if (scoreRadius > maxRadius) {
@@ -81,7 +81,7 @@ var targetFace = {
       y = getRandomNumber(maxRadius*2);
       // Getting distance from center
       distanceFromCenter = Math.sqrt(Math.pow((maxRadius-x),2) + Math.pow((maxRadius-y),2));
-      while (parseFloat(distanceFromCenter) <= parseFloat(maxRadius)) {
+      while (parseFloat(distanceFromCenter) <= parseFloat(maxRadius)) {
           // console.log("scoreRadius:" ,scoreRadius, "scoreValue:",scoreValue);
         if (parseFloat(distanceFromCenter) <= parseFloat(scoreRadius)) {
           drawx = this.size/2-maxRadius+x;

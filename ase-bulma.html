@@ -23,10 +23,6 @@
         </div>
 
         <div class="field is-horizontal has-addons has-addons-centered">
-
-            <!-- <div class="field-label is-normal">
-        <label class="label" for="inputLowScore">Lowest score:</label>
-      </div> -->
             <div class="field-body">
                 <div class="control">
                     <input class="input" type="text" id="inputArcherName1" placeholder="Archer's Name">
@@ -49,9 +45,6 @@
         </div>
 
         <div id="idArcher2" class="field is-horizontal has-addons has-addons-centered">
-            <!-- <div class="field-label is-normal">
-        <label class="label" for="inputHighScore">Highest score:</label>
-      </div> -->
             <div class="field-body">
                 <div class="control">
                     <input class="input" type="text" id="inputArcherName2" placeholder="Archer's Name">
@@ -103,11 +96,6 @@
             </div>
         </div>
 
-        <!-- <button class="button is-link" type="button" id="buttonGetGrouping" onclick="targetFace.getRoundDiamAverages()">Find grouping size</button>
-  <button class="button is-info" type="button" id="buttonGetTargetSize" onclick="targetFace.getTargetSize()">Calculate target size</button> -->
-
-        <!-- <button class="button is-danger" type="button" id="buttonClearChart" onclick="targetFace.clearCanvasChart(ctx1rst,ctx1rstChart)">Clear canvas</button> -->
-
         <div class="field is-horizontal has-addons">
             <div class="field-label is-normal">
                 <label class="label" for="inputFileName">File name:</label>
@@ -117,7 +105,6 @@
                     <input class="input" type="text" id="inputFileName" value="targetface.pdf">
                 </div>
                 <div class="control">
-                    <!-- <button class="button is-success" type="button" id="buttonSavePdf" onclick="">Save PDF</button> -->
                     <a class="button is-success" id="buttonSavePdf" onclick="">Save PDF</a>
                 </div>
             </div>
@@ -132,20 +119,11 @@
         <div id="tmpOutput"></div>
         <script src="js/ase-pure.js"></script>
     </div>
-    <!-- container -->
-    <!-- <div id="newArcherScript" style="display: none;">ID of this div is: ' + id + '<br></div> -->
+    
     <script>
         var id = 2;
         $('#buttonAddNewArcher').on('click', function() {
-
-            // var count = $('div.archerPlaceholder div').length+3,
-            // id = count + Math.floor(Math.random() * 100);
-            // id = count++;
             id++;
-            /* var instertedArcher = '<div id="divInstertedArcher">' +
-            'ID of this div is: '+ id +' <br></div>'; */
-            /*    var instertedArcher = `<div id="divInstertedArcher">
-            ID of this div is:  ${id}<br></div>`; */
             var instertedArcher =
                 `
                 <div id="idArcher${id}" class="field is-horizontal has-addons has-addons-centered">
@@ -173,13 +151,8 @@
                     </div>
                 </div>
                 `;
-            // $('div.archerPlaceholder').append('<div id="' + id + '">ID of this div is: ' + id + ' </div>');
-            //$('div.archerPlaceholder').append($("#newArcherScript").html());
             $('div.archerPlaceholder').append(instertedArcher);
         });
-      /*  $('#buttonRemoveArcher2').on('click', function() {
-            document.getElementById("idArcher2").outerHTML=""; 
-        }); */
         $("body").on("click", ".remove", function () {
             $(this).closest(".field").remove();
         });
