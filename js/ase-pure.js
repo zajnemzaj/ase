@@ -106,7 +106,7 @@ var targetFace = {
    */
   getRoundScore : function(maxRadius) {
     var scoreOfRound = 0,
-        scoreToTest = +document.getElementById("inputHighScore").value;
+        scoreToTest = +document.getElementById("inputScore2").value;
     do {
       scoreOfRound += parseInt(this.getTFOneScore(parseInt(maxRadius),this.size/2));
       // console.log("scoreOfRound: ",scoreOfRound, "maxRadius: ", maxRadius);
@@ -129,7 +129,7 @@ var targetFace = {
    */
   getXRoundsDiam : function() {
     var radius = this.size/2,
-        scoreToTest = +document.getElementById("inputHighScore").value,
+        scoreToTest = +document.getElementById("inputScore2").value,
         i = 0,
         radiusSum = 0,
         radiusNo = 0,
@@ -191,8 +191,8 @@ var targetFace = {
    */
   getTargetSize : function() {
     this.clearCanvasChart(ctx1rst,ctx1rstChart);
-    var scoreHigh = +document.getElementById("inputHighScore").value,
-        scoreLow = +document.getElementById("inputLowScore").value,
+    var scoreHigh = +document.getElementById("inputScore2").value,
+        scoreLow = +document.getElementById("inputScore1").value,
         groupingSize = +document.getElementById("inputGrouping").value,
         roundCount = 200,
         targetfaceRadius = 200,
@@ -218,5 +218,13 @@ var targetFace = {
     return parseInt(targetSizeSum/targetSizeNo);
   }
 };
+
+$('#buttonGetGrouping').on('click', function() {
+  targetFace.getRoundDiamAverages();
+});
+
+$('#buttonGetTargetSize').on('click', function() {
+  targetFace.getTargetSize();
+});
 
 targetFace.drawTF(ctx1rst,targetFace.size);
