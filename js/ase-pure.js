@@ -104,9 +104,9 @@ var targetFace = {
    * @param {number} maxRadius
    * @return {number} scoreOfRound
    */
-  getRoundScore : function(maxRadius) {
-    var scoreOfRound = 0,
-        scoreToTest = +document.getElementById("inputScore2").value;
+  getRoundScore : function(maxRadius,scoreToTest) {
+    var scoreOfRound = 0;
+        //scoreToTest = +document.getElementById("inputScore2").value;
     do {
       scoreOfRound += parseInt(this.getTFOneScore(parseInt(maxRadius),this.size/2));
       // console.log("scoreOfRound: ",scoreOfRound, "maxRadius: ", maxRadius);
@@ -127,9 +127,9 @@ var targetFace = {
    * to get the given score
    * @return {number} diameter
    */
-  getXRoundsDiam : function() {
+  getXRoundsDiam : function(scoreToTest) {
     var radius = this.size/2,
-        scoreToTest = +document.getElementById("inputScore2").value,
+        //scoreToTest = +document.getElementById("inputScore2").value,
         i = 0,
         radiusSum = 0,
         radiusNo = 0,
@@ -137,7 +137,7 @@ var targetFace = {
         helper = 0,
         roundsNr = 200;
     for (i = roundsNr; i > 0; i--) {
-      actualScore = this.getRoundScore(parseInt(radius));
+      actualScore = this.getRoundScore(parseInt(radius),scoreToTest);
       if (scoreToTest-5 <= actualScore && actualScore <= scoreToTest+5) {
         radiusSum += radius;
         radiusNo++;
@@ -154,13 +154,13 @@ var targetFace = {
    * Shooting runCount times 200 rounds to get diameter for given score
    * @return {number} finalDiam
    */
-  getRoundDiamAverages : function() {
+  getRoundDiamAverages : function(scoreToTest) {
     this.clearCanvasChart(ctx1rst,ctx1rstChart);
     var runCount = 32,
         runSum = 0,
         finalDiam = 0;
     for (var i = 0; i < runCount; i++) {
-      runSum += this.getXRoundsDiam();
+      runSum += this.getXRoundsDiam(scoreToTest);
     }
     finalDiam = Math.round(runSum/runCount);
     // document.getElementById("tmpOutput").innerHTML += "Optimal radius for higher score: " + finalDiam + "<br>";
@@ -220,11 +220,13 @@ var targetFace = {
 };
 
 $('#buttonGetGrouping').on('click', function() {
-  targetFace.getRoundDiamAverages();
+    scoreToTest = +document.getElementById("inputScore2").value;
+
+    document.getElementById("inputAvgScore2").value = targetFace.getRoundDiamAverages(scoreToTest);
 });
 
 $('#buttonGetTargetSize').on('click', function() {
-  targetFace.getTargetSize();
+    document.getElementById("inputSugScore2").value = targetFace.getTargetSize();
 });
 
 targetFace.drawTF(ctx1rst,targetFace.size);
