@@ -189,12 +189,9 @@ var targetFace = {
    * with grouping of higher score shooter
    * @return {number} diameter
    */
-  getTargetSize : function() {
+  getTargetSize : function(scoreHigh,scoreLow,groupingSize) {
     this.clearCanvasChart(ctx1rst,ctx1rstChart);
-    var scoreHigh = +document.getElementById("inputScore2").value,
-        scoreLow = +document.getElementById("inputScore1").value,
-        groupingSize = +document.getElementById("inputGrouping").value,
-        roundCount = 200,
+    var roundCount = 200,
         targetfaceRadius = 200,
         targetSizeSum = 0,
         targetSizeNo = 0;
@@ -214,7 +211,7 @@ var targetFace = {
       targetfaceRadius--;
     } while (targetfaceRadius >= groupingSize);
     // document.getElementById("tmpOutput").innerHTML += "Best targetface radius for high score shooter to shoot around " + scoreLow + ": " + parseInt(targetSizeSum/targetSizeNo) + "<br>";
-    document.getElementById("inputFinalRadius").value = parseInt(targetSizeSum/targetSizeNo);
+    // document.getElementById("inputFinalRadius").value = parseInt(targetSizeSum/targetSizeNo);
     return parseInt(targetSizeSum/targetSizeNo);
   }
 };
@@ -226,7 +223,11 @@ $('#buttonGetGrouping').on('click', function() {
 });
 
 $('#buttonGetTargetSize').on('click', function() {
-    document.getElementById("inputSugScore2").value = targetFace.getTargetSize();
+    var scoreHigh = +document.getElementById("inputScore2").value,
+        scoreLow = +document.getElementById("inputScore1").value,
+        groupingSize = +document.getElementById("inputGrouping").value;
+        
+    document.getElementById("inputSugScore2").value = targetFace.getTargetSize(scoreHigh,scoreLow,groupingSize);
 });
 
 targetFace.drawTF(ctx1rst,targetFace.size);
