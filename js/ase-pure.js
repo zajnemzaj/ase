@@ -164,7 +164,6 @@ var targetFace = {
     }
     finalDiam = Math.round(runSum/runCount);
     // document.getElementById("tmpOutput").innerHTML += "Optimal radius for higher score: " + finalDiam + "<br>";
-    document.getElementById("inputGrouping").value = finalDiam;
     return finalDiam;
     //CanvasObject.GetComponent<Canvas>().enabled = false;
   },
@@ -211,7 +210,6 @@ var targetFace = {
       targetfaceRadius--;
     } while (targetfaceRadius >= groupingSize);
     // document.getElementById("tmpOutput").innerHTML += "Best targetface radius for high score shooter to shoot around " + scoreLow + ": " + parseInt(targetSizeSum/targetSizeNo) + "<br>";
-    // document.getElementById("inputFinalRadius").value = parseInt(targetSizeSum/targetSizeNo);
     return parseInt(targetSizeSum/targetSizeNo);
   }
 };
@@ -219,15 +217,35 @@ var targetFace = {
 $('#buttonGetGrouping').on('click', function() {
     scoreToTest = +document.getElementById("inputScore2").value;
 
-    document.getElementById("inputAvgScore2").value = targetFace.getRoundDiamAverages(scoreToTest);
+    document.getElementById("inputAvgRadius2").value = targetFace.getRoundDiamAverages(scoreToTest);
 });
 
-$('#buttonGetTargetSize').on('click', function() {
+/* $('#buttonGetTargetSize').on('click', function() {
     var scoreHigh = +document.getElementById("inputScore2").value,
         scoreLow = +document.getElementById("inputScore1").value,
-        groupingSize = +document.getElementById("inputGrouping").value;
-        
-    document.getElementById("inputSugScore2").value = targetFace.getTargetSize(scoreHigh,scoreLow,groupingSize);
+        groupingSize = +document.getElementById("inputAvgRadius2").value;
+
+    document.getElementById("inputSugRadius2").value = targetFace.getTargetSize(scoreHigh,scoreLow,groupingSize);
+}); */
+
+$('#buttonGetTargetSize').click(function(e) {
+    e.preventDefault();
+    var arrText = new Array();
+    $('.container').each(function(i) {
+        if (typeof arrText[i] == "undefined")
+            arrText[i] = new Array();
+
+        $(this).find('input[type=text]').each(function() {
+            if ($(this).val() != '') {
+                // arrText.push('nietleeg');
+                arrText[i].push($(this).val());
+            }
+        })
+        console.log(arrText[i]);
+    })
+
+    console.log(arrText);
+
 });
 
 targetFace.drawTF(ctx1rst,targetFace.size);

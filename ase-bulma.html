@@ -32,10 +32,10 @@
                         <input class="input input-narrow" type="text" id="inputScore1" placeholder="Score" value="245">
                     </div>
                     <div class="control column">
-                        <input class="input input-narrow" type="text" id="inputAvgScore1" placeholder="Avg. radius" disabled>
+                        <input class="input input-narrow" type="text" id="inputAvgRadius1" placeholder="Avg. radius" disabled>
                     </div>
                     <div class="control column">
-                        <input class="input input-narrow" type="text" id="inputSugScore1" placeholder="Sug. radius" disabled>
+                        <input class="input input-narrow" type="text" id="inputSugRadius1" placeholder="Sug. radius" disabled>
                     </div>
                     <div class="control column">
                         <a class="button" id="buttonAddNewArcher" onclick="">Add new archer</a>
@@ -54,10 +54,10 @@
                         <input class="input input-narrow" type="text" id="inputScore2" placeholder="Score" value="285">
                     </div>
                     <div class="control column">
-                        <input class="input input-narrow" type="text" id="inputAvgScore2" placeholder="Avg. radius" disabled>
+                        <input class="input input-narrow" type="text" id="inputAvgRadius2" placeholder="Avg. radius" disabled>
                     </div>
                     <div class="control column">
-                        <input class="input input-narrow" type="text" id="inputSugScore2" placeholder="Sug. radius" disabled>
+                        <input class="input input-narrow" type="text" id="inputSugRadius2" placeholder="Sug. radius" disabled>
                     </div>
                     <div class="control column">
                         <a class="button remove" id="buttonRemoveArcher2" onclick="">Remove archer</a>
@@ -68,44 +68,29 @@
 
         <div class="archerPlaceholder"></div>
 
-        <div class="field is-horizontal has-addons">
-            <div class="field-label is-normal">
-                <label class="label" for="inputGrouping">Average radius of grouping for high-scorer on 40cm targetface (mm):</label>
+        <div class="level">
+            <div class="level-item">
+                <a class="button is-link" id="buttonGetGrouping">Find grouping sizes</a>
             </div>
-            <div class="field-body">
-                <div class="control">
-                    <input class="input" type="text" id="inputGrouping" value="">
-                </div>
-                <div class="control">
-                    <a class="button is-link" id="buttonGetGrouping">Find grouping sizes</a>
-                </div>
+            <div class="level-item">
+                <a class="button is-link" id="buttonGetTargetSize">Calculate target sizes</a>
             </div>
         </div>
 
-        <div class="field is-horizontal has-addons">
-            <div class="field-label is-normal">
-                <label class="label" for="inputFinalRadius">Suggested radius of targetface to download for high score archer (mm):</label>
-            </div>
-            <div class="field-body">
-                <div class="control">
-                    <input class="input" type="text" id="inputFinalRadius" value="">
-                </div>
-                <div class="control">
-                    <a class="button is-link" id="buttonGetTargetSize" onclick="targetFace.getTargetSize()">Calculate target sizes</a>
-                </div>
-            </div>
-        </div>
-
-        <div class="field is-horizontal has-addons">
-            <div class="field-label is-normal">
-                <label class="label" for="inputFileName">File name:</label>
-            </div>
-            <div class="field-body">
-                <div class="control">
-                    <input class="input" type="text" id="inputFileName" value="targetface.pdf">
-                </div>
-                <div class="control">
-                    <a class="button is-success" id="buttonSavePdf" onclick="">Save PDF</a>
+        <div class="level">
+            <div class="level-item">
+                <div class="field is-horizontal has-addons">
+                    <div class="field-label is-normal">
+                        <label class="label" for="inputFileName">File name:</label>
+                    </div>
+                    <div class="field-body">
+                        <div class="control">
+                            <input class="input" type="text" id="inputFileName" value="targetface.pdf">
+                        </div>
+                        <div class="control">
+                            <a class="button is-success" id="buttonSavePdf" onclick="">Save PDF</a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -139,10 +124,10 @@
                                 <input class="input input-narrow" type="text" id="inputScore${id}" placeholder="Score" value="">
                             </div>
                             <div class="control column">
-                                <input class="input input-narrow" type="text" id="inputAvgScore${id}" placeholder="Avg. radius" disabled>
+                                <input class="input input-narrow" type="text" id="inputAvgRadius${id}" placeholder="Avg. radius" disabled>
                             </div>
                             <div class="control column">
-                                <input class="input input-narrow" type="text" id="inputSugScore${id}" placeholder="Sug. radius" disabled>
+                                <input class="input input-narrow" type="text" id="inputSugRadius${id}" placeholder="Sug. radius" disabled>
                             </div>
                             <div class="control column">
                                 <a class="button remove" id="buttonRemoveArcher${id}" onclick="">Remove archer</a>
@@ -153,7 +138,7 @@
                 `;
             $('div.archerPlaceholder').append(instertedArcher);
         });
-        $("body").on("click", ".remove", function () {
+        $("body").on("click", ".remove", function() {
             $(this).closest(".field").remove();
         });
     </script>

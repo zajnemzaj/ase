@@ -15,3 +15,7 @@
 .field {
     margin-bottom: 15px;
 }
+
+.container {
+    max-width: 640px;
+}
