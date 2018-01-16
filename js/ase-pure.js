@@ -233,13 +233,23 @@ $('#buttonGetTargetSize').click(function(e) {
     var arrText = new Array();
     $('.container').each(function(i) {
         if (typeof arrText[i] == "undefined")
-            arrText[i] = new Array();
+            // arrText[i] = new Array();
+            arrText[i] = {};
 
-        $(this).find('input[type=text]').each(function() {
-            if ($(this).val() != '') {
+        $(this).find('input[type=text]').each(function(j) {
+            //if ($(this).val() != '') {
                 // arrText.push('nietleeg');
-                arrText[i].push($(this).val());
-            }
+               // arrText[i].push($(this).val());
+               var propName = $(this).attr("id").slice(0,-1);
+               if (propName == "inputArcherName") {
+                   arrText[Math.floor(j/4)] = {};
+               }
+               if (propName !== "inputFileNam") {
+                   arrText[Math.floor(j/4)][propName] = $(this).val();
+               } else {
+                   var fileName = $(this).val();
+               }
+            //}
         })
         console.log(arrText[i]);
     })
