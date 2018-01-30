@@ -288,4 +288,92 @@ $('#buttonGetTargetSize').click(function(e) {
     document.getElementById("buttonGetTargetSize").classList.remove("is-loading");
 }); // End of buttonGetTargetSize click event function
 
+function convertToPdf(svg, callback) {
+    // Call svgAsDataUri from saveSvgAsPng.js
+    window.svgAsDataUri(svg, {}, svgUri => {
+        // Create an anonymous image in memory to set
+        // the png content to
+        let $image = $("<img>"),
+            image = $image[0];
+
+        // Set the image's src to the svg png's URI
+        image.src = svgUri;
+        $image.on("load", () => {
+            // Once the image is loaded, create a canvas and
+            // invoke the jsPDF library
+            let canvas = document.createElement("canvas"),
+                ctx = canvas.getContext("2d"),
+                doc = new jsPDF("portrait", "mm"),
+                //  imgWidth = image.width,
+                //  imgHeight = image.height;
+                // Setting the quality of the image
+                imgWidth = 2000,
+                imgHeight = 2000,
+                // If it is 2, than it is going to be a 40cm targetface. In case of 1, than it is 20cm and it fits exatly to a A4 paper.
+                scalingTmp = 2;
+
+            function getImage(newDiameter) {
+                let scalingFactor = scalingTmp * (newDiameter / 200);
+                // Set the canvas size to the size of the image
+                canvas.width = imgWidth;
+                canvas.height = imgHeight;
+                // Fill the black background
+                ctx.fillStyle = "#FFF";
+                ctx.fillRect(0, 0, 2000, 2000);
+
+                // Draw the image to the canvas element
+                // zooming the image and positioning on the canvas
+                ctx.drawImage(
+                    image,
+                    (imgWidth * scalingFactor - imgWidth) / -2,
+                    (imgHeight * scalingFactor - imgHeight) / -2,
+                    imgWidth * scalingFactor,
+                    imgHeight * scalingFactor
+                );
+
+                return canvas.toDataURL("image/jpeg");
+            }
+
+            let inputDiams = document.getElementsByClassName("diameter");
+            for (let i = 0; i < inputDiams.length; i++) {
+                let dataUrl = getImage(inputDiams[i].value);
+                // Where and which size to display picture on pdf page
+                doc.addImage(dataUrl, "JPEG", 5, 49, 200, 200);
+                if (i !== inputDiams.length - 1) doc.addPage();
+            }
+            callback(doc);
+        });
+    });
+}
+
+function downloadPdf(fileName, pdfDoc) {
+    // Dynamically create a link
+    let $link = $("<a>"),
+        link = $link[0],
+        dataUriString = pdfDoc.output("dataurlstring");
+
+    // On click of the link, set the HREF and download of it
+    // so that it behaves as a link to a file
+    $link.on("click", () => {
+        link.href = dataUriString;
+        link.download = fileName;
+        $link.detach(); // Remove it from the DOM once the download starts
+    });
+
+    // Add it to the body and immediately click it
+    $("body").append($link);
+    $link[0].click();
+}
+
+// Save to PDF button click handler
+$("#buttonSavePdf").on("click", () => {
+    // Convert it to PDF first
+    convertToPdf($("#svg")[0], doc => {
+        // Get the file name and download the pdf
+        let filename = $("#inputFileName").val();
+
+        downloadPdf(filename, doc);
+    });
+});
+
 targetFace.drawTF(ctx1rst, targetFace.size);
