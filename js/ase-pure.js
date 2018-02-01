@@ -287,24 +287,14 @@ $('#buttonGetTargetSize').click(function(e) {
         var actualRadius = +arrText[k]["inputAvgRadius"];
         if (actualScore !== parseInt(minScore)) {
             if (actualScore !== 0) {
-                // for (var l = 0; l < k || k == 0; l++) {
-                //     if ((k == 0 && l == 0) || actualScore != arrText[l]["inputScore"]) {
-                      //  let obj = arrText.find(o => o.inputScore === '245');
-
                       var index = arrText.findIndex(x => x.inputScore==actualScore);
                       if (index == k) {
                           document.getElementById(`inputSugRadius${k+1}`).value = targetFace.getTargetSize(actualScore, parseInt(minScore), actualRadius);
                           arrText[k]["inputSugRadius"] = +document.getElementById(`inputSugRadius${k+1}`).value;
                       } else {
-                          //alert(index);
                           document.getElementById(`inputSugRadius${k+1}`).value = arrText[index]["inputSugRadius"];
+                          arrText[k]["inputSugRadius"] = +document.getElementById(`inputSugRadius${k+1}`).value;
                       }
-                      //alert(index);
-
-                    // } else {
-                //         document.getElementById(`inputSugRadius${k+1}`).value = arrText[l][`inputSugRadius${l+1}`];
-                //     }
-                // }
             }
         } else {
             document.getElementById(`inputSugRadius${k+1}`).value = 200;
