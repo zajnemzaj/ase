@@ -215,6 +215,7 @@ var targetFace = {
     }
 }; // End of targetFace object
 
+// jquery button click
 $('#buttonGetGrouping').on('click', function() {
     scoreToTest = +document.getElementById("inputScore2").value;
     scoreToTest2 = +document.getElementById("inputScore1").value;
@@ -367,6 +368,14 @@ function downloadPdf(fileName, pdfDoc) {
 
 // Save to PDF button click handler
 $("#buttonSavePdf").on("click", () => {
+    // Let's see if there's an empty diamater input field
+    let arrayDiams = document.getElementsByClassName("diameter");
+    // arrayDiams.forEach(function(element) {
+    for (let i = 0; i < arrayDiams.length; i++) {
+        if (arrayDiams[i].value == "") {
+           $('#buttonGetTargetSize').click();
+        }
+    };
     // Convert it to PDF first
     convertToPdf($("#svg")[0], doc => {
         // Get the file name and download the pdf

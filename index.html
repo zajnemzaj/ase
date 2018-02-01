@@ -202,6 +202,14 @@
         $(".navbar-item").removeClass('is-active'); // remove is-active class from all menu-item
         $("#ase-bulma").toggleClass('is-active'); // add is-active class to actual menu item
      });
+     // temporary loading bulma as default
+     $("#nav-placeholder").load("ase-bulma.html"); // Load html page
+        //$("#navBurger").toggleClass('is-active'); // toggle burger back to default
+       // $("#navMenubd-example").toggleClass('is-active'); // hide menu
+
+        $(".navbar-item").removeClass('is-active'); // remove is-active class from all menu-item
+        $("#ase-bulma").toggleClass('is-active'); // add is-active class to actual menu item
+     
     });
   </script>
 

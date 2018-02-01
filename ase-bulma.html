@@ -8,6 +8,17 @@
     <link rel="stylesheet" href="css/ase-bulma.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.1.135/jspdf.debug.js"></script>
     <script src="https://rawgit.com/exupero/saveSvgAsPng/gh-pages/saveSvgAsPng.js"></script>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-3612948-2"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
+        gtag('config', 'UA-3612948-2');
+    </script>
+
 </head>
 
 <body>
@@ -37,7 +48,7 @@
                         <input class="input input-narrow" type="text" id="inputAvgRadius1" placeholder="Avg. radius" disabled>
                     </div>
                     <div class="control column">
-                        <input class="input input-narrow diameter" type="text" id="inputSugRadius1" placeholder="Sug. radius" disabled>
+                        <input class="input input-narrow diameter" type="text" id="inputSugRadius1" placeholder="Sug. radius">
                     </div>
                     <div class="control column">
                         <a class="button" id="buttonAddNewArcher" onclick="">Add new archer</a>
@@ -59,7 +70,7 @@
                         <input class="input input-narrow" type="text" id="inputAvgRadius2" placeholder="Avg. radius" disabled>
                     </div>
                     <div class="control column">
-                        <input class="input input-narrow diameter" type="text" id="inputSugRadius2" placeholder="Sug. radius" disabled>
+                        <input class="input input-narrow diameter" type="text" id="inputSugRadius2" placeholder="Sug. radius">
                     </div>
                     <div class="control column">
                         <a class="button remove" id="buttonRemoveArcher2" onclick="">Remove archer</a>
@@ -126,7 +137,7 @@
                                 <input class="input input-narrow" type="text" id="inputAvgRadius${id}" placeholder="Avg. radius" disabled>
                             </div>
                             <div class="control column">
-                                <input class="input input-narrow diameter" type="text" id="inputSugRadius${id}" placeholder="Sug. radius" disabled>
+                                <input class="input input-narrow diameter" type="text" id="inputSugRadius${id}" placeholder="Sug. radius">
                             </div>
                             <div class="control column">
                                 <a class="button remove" id="buttonRemoveArcher${id}" onclick="">Remove archer</a>
