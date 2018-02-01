@@ -223,9 +223,11 @@ $('#buttonGetGrouping').on('click', function() {
     document.getElementById("inputAvgRadius1").value = targetFace.getRoundDiamAverages(scoreToTest2);
 });
 
+var arrText = new Array();
+
 $('#buttonGetTargetSize').click(function(e) {
     e.preventDefault();
-    var arrText = new Array();
+
     var doCountAvg = 0;
     var idNo = 0;
     var minScore = 0;
@@ -298,6 +300,7 @@ $('#buttonGetTargetSize').click(function(e) {
             }
         } else {
             document.getElementById(`inputSugRadius${k+1}`).value = 200;
+            arrText[k]["inputSugRadius"] = +document.getElementById(`inputSugRadius${k+1}`).value;
         }
     }
 
@@ -321,7 +324,12 @@ function convertToPdf(svg, callback) {
             // invoke the jsPDF library
             let canvas = document.createElement("canvas"),
                 ctx = canvas.getContext("2d"),
+                // Default size was:
                 doc = new jsPDF("portrait", "mm"),
+                // A4
+                //doc = new jsPDF('p', 'mm', [297, 210]);
+                // A3
+                //doc = new jsPDF('p', 'mm', [410, 297]);
                 //  imgWidth = image.width,
                 //  imgHeight = image.height;
                 // Setting the quality of the image
@@ -357,6 +365,17 @@ function convertToPdf(svg, callback) {
                 let dataUrl = getImage(inputDiams[i].value);
                 // Where and which size to display picture on pdf page
                 doc.addImage(dataUrl, "JPEG", 5, 49, 200, 200);
+                doc.setFontSize(9);
+                doc.text(10, 10, 'Name: ' + arrText[i]["inputArcherName"].toString());
+                doc.text(10, 15, 'Average Score: ' + arrText[i]["inputScore"].toString());
+                // Getting radius from array of objects
+                // doc.text(10, 20, 'Radius: ' + arrText[i]["inputSugRadius"].toString() + ' mm');
+                // Getting radius from entered value
+                if (inputDiams[i].value != arrText[i]["inputSugRadius"].toString()) {
+                    doc.text(10, 20, 'Radius: ' + inputDiams[i].value + ' mm (entered by user)');
+                } else {
+                    doc.text(10, 20, 'Radius: ' + inputDiams[i].value + ' mm (calculated)');
+                }
                 if (i !== inputDiams.length - 1) doc.addPage();
             }
             callback(doc);
