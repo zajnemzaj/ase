@@ -119,6 +119,7 @@
         var id = 2;
         $('#buttonAddNewArcher').on('click', function() {
             id++;
+            if (id <= 9) {
             var instertedArcher =
                 `
                 <div id="idArcher${id}" class="field is-horizontal has-addons has-addons-centered">
@@ -147,6 +148,10 @@
                 </div>
                 `;
             $('div.archerPlaceholder').append(instertedArcher);
+        } else {
+            if (id === 10) alert("Maximum 9 archers for now. Work in progress...");
+            else alert("You already added 9 archers...Sorry :( Refresh the page if you want to start over.");
+        }
         });
         // Remove button click handlers
         $("body").on("click", ".remove", function() {

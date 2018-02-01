@@ -230,7 +230,7 @@ $('#buttonGetTargetSize').click(function(e) {
     var idNo = 0;
     var minScore = 0;
     var actualScore = 0;
-    document.getElementById("buttonGetTargetSize").classList.add("is-loading");
+    // document.getElementById("buttonGetTargetSize").classList.add("is-loading");
 
     $('.container').each(function(i) {
         if (typeof arrText[i] == "undefined")
@@ -239,7 +239,7 @@ $('#buttonGetTargetSize').click(function(e) {
         $(this).find('input[type=text]').each(function(j) {
             // Actual property name stored
             var propName = $(this).attr("id").slice(0, -1);
-            // Actual input row number of form
+            // Actual input row number of form. 4 input fields / row
             var actInNo = Math.floor(j / 4);
             // Declaring object when first element is seelcted
             if (propName == "inputArcherName") {
@@ -260,8 +260,18 @@ $('#buttonGetTargetSize').click(function(e) {
                 if (propName == "inputAvgRadius" && doCountAvg == 1) {
                     // Plus sign is needed because we want the input to be number
                     actualScore = +arrText[actInNo]["inputScore"];
-                    arrText[actInNo][propName] = targetFace.getRoundDiamAverages(actualScore);
-                    document.getElementById(`inputAvgRadius${idNo}`).value = arrText[actInNo][propName];
+                    // Let's check if there were already the same score entered so they won't differ
+                    for (var j = 0; j <= actInNo; j++) {
+                        if (actualScore == arrText[j]["inputScore"] && actInNo != 0) {
+                            arrText[actInNo][propName] = arrText[j][propName];
+                            document.getElementById(`inputAvgRadius${idNo}`).value = arrText[actInNo][propName];
+                        } else {
+                            if (j == 0 || j != actInNo) {
+                                arrText[actInNo][propName] = targetFace.getRoundDiamAverages(actualScore);
+                                document.getElementById(`inputAvgRadius${idNo}`).value = arrText[actInNo][propName];
+                            }
+                        }
+                    }
                     doCountAvg = 0;
                 }
 
@@ -277,7 +287,24 @@ $('#buttonGetTargetSize').click(function(e) {
         var actualRadius = +arrText[k]["inputAvgRadius"];
         if (actualScore !== parseInt(minScore)) {
             if (actualScore !== 0) {
-                document.getElementById(`inputSugRadius${k+1}`).value = targetFace.getTargetSize(actualScore, parseInt(minScore), actualRadius);
+                // for (var l = 0; l < k || k == 0; l++) {
+                //     if ((k == 0 && l == 0) || actualScore != arrText[l]["inputScore"]) {
+                      //  let obj = arrText.find(o => o.inputScore === '245');
+
+                      var index = arrText.findIndex(x => x.inputScore==actualScore);
+                      if (index == k) {
+                          document.getElementById(`inputSugRadius${k+1}`).value = targetFace.getTargetSize(actualScore, parseInt(minScore), actualRadius);
+                          arrText[k]["inputSugRadius"] = +document.getElementById(`inputSugRadius${k+1}`).value;
+                      } else {
+                          //alert(index);
+                          document.getElementById(`inputSugRadius${k+1}`).value = arrText[index]["inputSugRadius"];
+                      }
+                      //alert(index);
+
+                    // } else {
+                //         document.getElementById(`inputSugRadius${k+1}`).value = arrText[l][`inputSugRadius${l+1}`];
+                //     }
+                // }
             }
         } else {
             document.getElementById(`inputSugRadius${k+1}`).value = 200;
@@ -286,7 +313,7 @@ $('#buttonGetTargetSize').click(function(e) {
 
     console.log(arrText);
 
-    document.getElementById("buttonGetTargetSize").classList.remove("is-loading");
+    // document.getElementById("buttonGetTargetSize").classList.remove("is-loading");
 }); // End of buttonGetTargetSize click event function
 
 function convertToPdf(svg, callback) {
@@ -373,7 +400,7 @@ $("#buttonSavePdf").on("click", () => {
     // arrayDiams.forEach(function(element) {
     for (let i = 0; i < arrayDiams.length; i++) {
         if (arrayDiams[i].value == "") {
-           $('#buttonGetTargetSize').click();
+            $('#buttonGetTargetSize').click();
         }
     };
     // Convert it to PDF first
