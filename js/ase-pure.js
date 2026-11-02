@@ -234,6 +234,9 @@ $('#buttonGetTargetSize').click(function(e) {
     var actualScore = 0;
     // document.getElementById("buttonGetTargetSize").classList.add("is-loading");
 
+    // Start from an empty list so removed archers don't stay in it
+    arrText.length = 0;
+
     $('.container').each(function(i) {
         if (typeof arrText[i] == "undefined")
             arrText[i] = {};
@@ -246,16 +249,18 @@ $('#buttonGetTargetSize').click(function(e) {
             // Declaring object when first element is seelcted
             if (propName == "inputArcherName") {
                 arrText[actInNo] = {};
+                // Archer's own number from the input ids, it differs from the row number after removing archers
+                arrText[actInNo]["idNo"] = $(this).attr("id").slice(-1);
             }
             if (propName !== "inputFileNam") {
                 // Store property value
                 arrText[actInNo][propName] = $(this).val();
                 if (propName == "inputScore" && arrText[actInNo]["inputScore"] !== "") {
-                    arrText[actInNo]["idNo"] = $(this).attr("id")[$(this).attr("id").length - 1];
                     idNo = arrText[actInNo]["idNo"];
 
-                    if (minScore == 0 || minScore > arrText[actInNo][propName]) {
-                        minScore = arrText[actInNo][propName];
+                    // Compare as numbers, as strings "99" > "245"
+                    if (minScore == 0 || minScore > +arrText[actInNo][propName]) {
+                        minScore = +arrText[actInNo][propName];
                     }
                     doCountAvg = 1;
                 }
@@ -287,21 +292,19 @@ $('#buttonGetTargetSize').click(function(e) {
         actualScore = +arrText[k]["inputScore"];
         console.log(typeof(actualScore));
         var actualRadius = +arrText[k]["inputAvgRadius"];
-        if (actualScore !== parseInt(minScore)) {
-            if (actualScore !== 0) {
-                      var index = arrText.findIndex(x => x.inputScore==actualScore);
-                      if (index == k) {
-                          document.getElementById(`inputSugRadius${k+1}`).value = targetFace.getTargetSize(actualScore, parseInt(minScore), actualRadius);
-                          arrText[k]["inputSugRadius"] = +document.getElementById(`inputSugRadius${k+1}`).value;
-                      } else {
-                          document.getElementById(`inputSugRadius${k+1}`).value = arrText[index]["inputSugRadius"];
-                          arrText[k]["inputSugRadius"] = +document.getElementById(`inputSugRadius${k+1}`).value;
-                      }
+        var sugRadiusInput = document.getElementById(`inputSugRadius${arrText[k]["idNo"]}`);
+        if (actualScore === 0) continue;
+        if (actualScore !== minScore) {
+            var index = arrText.findIndex(x => x.inputScore==actualScore);
+            if (index == k) {
+                sugRadiusInput.value = targetFace.getTargetSize(actualScore, minScore, actualRadius);
+            } else {
+                sugRadiusInput.value = arrText[index]["inputSugRadius"];
             }
         } else {
-            document.getElementById(`inputSugRadius${k+1}`).value = 200;
-            arrText[k]["inputSugRadius"] = +document.getElementById(`inputSugRadius${k+1}`).value;
+            sugRadiusInput.value = 200;
         }
+        arrText[k]["inputSugRadius"] = +sugRadiusInput.value;
     }
 
     console.log(arrText);
@@ -361,7 +364,11 @@ function convertToPdf(svg, callback) {
             }
 
             let inputDiams = document.getElementsByClassName("diameter");
+            let pageCount = 0;
             for (let i = 0; i < inputDiams.length; i++) {
+                // Skip archers added without a score, they have no targetface size
+                if (inputDiams[i].value == "") continue;
+                if (pageCount++ > 0) doc.addPage();
                 let dataUrl = getImage(inputDiams[i].value);
                 // Where and which size to display picture on pdf page
                 doc.addImage(dataUrl, "JPEG", 5, 49, 200, 200);
@@ -376,7 +383,6 @@ function convertToPdf(svg, callback) {
                 } else {
                     doc.text(10, 20, 'Radius: ' + inputDiams[i].value + ' mm (calculated)');
                 }
-                if (i !== inputDiams.length - 1) doc.addPage();
             }
             callback(doc);
         });
