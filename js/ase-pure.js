@@ -225,8 +225,45 @@ $('#buttonGetGrouping').on('click', function() {
 
 var arrText = new Array();
 
+// Score range the simulation can model: even arrows spread over the whole
+// 40 cm targetface average about 115, so lower scores have no grouping size
+var minModelScore = 125;
+var maxModelScore = 300;
+
+/**
+ * Checks the entered scores and shows a message for the ones out of range
+ * @return {boolean} true if all entered scores can be calculated
+ */
+function checkScores() {
+    var $messages = $("#calcMessages").empty();
+    var $list = $("<ul>");
+    $('input[id^=inputScore]').each(function() {
+        var value = $(this).val().trim();
+        var score = +value;
+        var isValid = value === "" || (Number.isInteger(score) && score >= minModelScore && score <= maxModelScore);
+        $(this).toggleClass("is-danger", !isValid);
+        if (!isValid) {
+            var idNo = $(this).attr("id").slice(-1);
+            var name = $(`#inputArcherName${idNo}`).val().trim() || `Archer ${idNo}`;
+            // Don't leave results of an earlier score next to the invalid one
+            $(`#inputAvgRadius${idNo}, #inputSugRadius${idNo}`).val("");
+            $list.append($("<li>").text(`${name}: ${value}`));
+        }
+    });
+    if ($list.children().length === 0) {
+        $messages.hide();
+        return true;
+    }
+    $messages
+        .append($("<p>").text(`Scores must be whole numbers between ${minModelScore} and ${maxModelScore}. Lower scores can't be calculated, because even arrows spread over the whole targetface score more than that in the simulation.`))
+        .append($list)
+        .show();
+    return false;
+}
+
 $('#buttonGetTargetSize').click(function(e) {
     e.preventDefault();
+    if (!checkScores()) return;
 
     var doCountAvg = 0;
     var idNo = 0;
@@ -410,6 +447,7 @@ function downloadPdf(fileName, pdfDoc) {
 
 // Save to PDF button click handler
 $("#buttonSavePdf").on("click", () => {
+    if (!checkScores()) return;
     // Let's see if there's an empty diamater input field
     let arrayDiams = document.getElementsByClassName("diameter");
     // arrayDiams.forEach(function(element) {
