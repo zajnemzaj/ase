@@ -22,12 +22,19 @@ npm run lint
 npm run build      # output: dist/spa
 ```
 
-The build uses relative paths, so `dist/spa` can be served from any folder, for example
-`/var/www/ase` on the Pi:
+The build uses relative paths, so `dist/spa` can be served from any folder.
+
+## Deploy
 
 ```bash
-rsync -av --delete dist/spa/ pi@rebegin.ddns.net:/var/www/ase/ -e "ssh -p 48627"
+npm run deploy -- --dry-run   # build and show what would change on the server
+npm run deploy                # build, show the changes, ask, then copy
 ```
+
+`scripts/deploy.sh` builds the app, adds `legacy/` (served under `/ase/legacy/`), and
+copies it with rsync to `pi@rebegin.ddns.net:/var/www/ase` (SSH port 48627). The folder belongs
+to root, so rsync runs with `sudo` there. Files not in the build are deleted, except a `.git`
+folder. Set `DEPLOY_HOST`, `DEPLOY_PORT` or `DEPLOY_PATH` to deploy elsewhere.
 
 ## How it works
 
