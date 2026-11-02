@@ -225,14 +225,54 @@ $('#buttonGetGrouping').on('click', function() {
 
 var arrText = new Array();
 
+// Score range the simulation can model: even arrows spread over the whole
+// 40 cm targetface average about 115, so lower scores have no grouping size
+var minModelScore = 125;
+var maxModelScore = 300;
+
+/**
+ * Checks the entered scores and shows a message for the ones out of range
+ * @return {boolean} true if all entered scores can be calculated
+ */
+function checkScores() {
+    var $messages = $("#calcMessages").empty();
+    var $list = $("<ul>");
+    $('input[id^=inputScore]').each(function() {
+        var value = $(this).val().trim();
+        var score = +value;
+        var isValid = value === "" || (Number.isInteger(score) && score >= minModelScore && score <= maxModelScore);
+        $(this).toggleClass("is-danger", !isValid);
+        if (!isValid) {
+            var idNo = $(this).attr("id").slice(-1);
+            var name = $(`#inputArcherName${idNo}`).val().trim() || `Archer ${idNo}`;
+            // Don't leave results of an earlier score next to the invalid one
+            $(`#inputAvgRadius${idNo}, #inputSugRadius${idNo}`).val("");
+            $list.append($("<li>").text(`${name}: ${value}`));
+        }
+    });
+    if ($list.children().length === 0) {
+        $messages.hide();
+        return true;
+    }
+    $messages
+        .append($("<p>").text(`Scores must be whole numbers between ${minModelScore} and ${maxModelScore}. Lower scores can't be calculated, because even arrows spread over the whole targetface score more than that in the simulation.`))
+        .append($list)
+        .show();
+    return false;
+}
+
 $('#buttonGetTargetSize').click(function(e) {
     e.preventDefault();
+    if (!checkScores()) return;
 
     var doCountAvg = 0;
     var idNo = 0;
     var minScore = 0;
     var actualScore = 0;
     // document.getElementById("buttonGetTargetSize").classList.add("is-loading");
+
+    // Start from an empty list so removed archers don't stay in it
+    arrText.length = 0;
 
     $('.container').each(function(i) {
         if (typeof arrText[i] == "undefined")
@@ -246,16 +286,18 @@ $('#buttonGetTargetSize').click(function(e) {
             // Declaring object when first element is seelcted
             if (propName == "inputArcherName") {
                 arrText[actInNo] = {};
+                // Archer's own number from the input ids, it differs from the row number after removing archers
+                arrText[actInNo]["idNo"] = $(this).attr("id").slice(-1);
             }
             if (propName !== "inputFileNam") {
                 // Store property value
                 arrText[actInNo][propName] = $(this).val();
                 if (propName == "inputScore" && arrText[actInNo]["inputScore"] !== "") {
-                    arrText[actInNo]["idNo"] = $(this).attr("id")[$(this).attr("id").length - 1];
                     idNo = arrText[actInNo]["idNo"];
 
-                    if (minScore == 0 || minScore > arrText[actInNo][propName]) {
-                        minScore = arrText[actInNo][propName];
+                    // Compare as numbers, as strings "99" > "245"
+                    if (minScore == 0 || minScore > +arrText[actInNo][propName]) {
+                        minScore = +arrText[actInNo][propName];
                     }
                     doCountAvg = 1;
                 }
@@ -287,21 +329,19 @@ $('#buttonGetTargetSize').click(function(e) {
         actualScore = +arrText[k]["inputScore"];
         console.log(typeof(actualScore));
         var actualRadius = +arrText[k]["inputAvgRadius"];
-        if (actualScore !== parseInt(minScore)) {
-            if (actualScore !== 0) {
-                      var index = arrText.findIndex(x => x.inputScore==actualScore);
-                      if (index == k) {
-                          document.getElementById(`inputSugRadius${k+1}`).value = targetFace.getTargetSize(actualScore, parseInt(minScore), actualRadius);
-                          arrText[k]["inputSugRadius"] = +document.getElementById(`inputSugRadius${k+1}`).value;
-                      } else {
-                          document.getElementById(`inputSugRadius${k+1}`).value = arrText[index]["inputSugRadius"];
-                          arrText[k]["inputSugRadius"] = +document.getElementById(`inputSugRadius${k+1}`).value;
-                      }
+        var sugRadiusInput = document.getElementById(`inputSugRadius${arrText[k]["idNo"]}`);
+        if (actualScore === 0) continue;
+        if (actualScore !== minScore) {
+            var index = arrText.findIndex(x => x.inputScore==actualScore);
+            if (index == k) {
+                sugRadiusInput.value = targetFace.getTargetSize(actualScore, minScore, actualRadius);
+            } else {
+                sugRadiusInput.value = arrText[index]["inputSugRadius"];
             }
         } else {
-            document.getElementById(`inputSugRadius${k+1}`).value = 200;
-            arrText[k]["inputSugRadius"] = +document.getElementById(`inputSugRadius${k+1}`).value;
+            sugRadiusInput.value = 200;
         }
+        arrText[k]["inputSugRadius"] = +sugRadiusInput.value;
     }
 
     console.log(arrText);
@@ -325,7 +365,7 @@ function convertToPdf(svg, callback) {
             let canvas = document.createElement("canvas"),
                 ctx = canvas.getContext("2d"),
                 // Default size was:
-                doc = new jsPDF("portrait", "mm"),
+                doc = new jspdf.jsPDF("portrait", "mm"),
                 // A4
                 //doc = new jsPDF('p', 'mm', [297, 210]);
                 // A3
@@ -361,7 +401,11 @@ function convertToPdf(svg, callback) {
             }
 
             let inputDiams = document.getElementsByClassName("diameter");
+            let pageCount = 0;
             for (let i = 0; i < inputDiams.length; i++) {
+                // Skip archers added without a score, they have no targetface size
+                if (inputDiams[i].value == "") continue;
+                if (pageCount++ > 0) doc.addPage();
                 let dataUrl = getImage(inputDiams[i].value);
                 // Where and which size to display picture on pdf page
                 doc.addImage(dataUrl, "JPEG", 5, 49, 200, 200);
@@ -376,7 +420,6 @@ function convertToPdf(svg, callback) {
                 } else {
                     doc.text(10, 20, 'Radius: ' + inputDiams[i].value + ' mm (calculated)');
                 }
-                if (i !== inputDiams.length - 1) doc.addPage();
             }
             callback(doc);
         });
@@ -384,26 +427,13 @@ function convertToPdf(svg, callback) {
 }
 
 function downloadPdf(fileName, pdfDoc) {
-    // Dynamically create a link
-    let $link = $("<a>"),
-        link = $link[0],
-        dataUriString = pdfDoc.output("dataurlstring");
-
-    // On click of the link, set the HREF and download of it
-    // so that it behaves as a link to a file
-    $link.on("click", () => {
-        link.href = dataUriString;
-        link.download = fileName;
-        $link.detach(); // Remove it from the DOM once the download starts
-    });
-
-    // Add it to the body and immediately click it
-    $("body").append($link);
-    $link[0].click();
+    // jsPDF downloads it through a Blob, browsers block large data: URI downloads
+    pdfDoc.save(fileName);
 }
 
 // Save to PDF button click handler
 $("#buttonSavePdf").on("click", () => {
+    if (!checkScores()) return;
     // Let's see if there's an empty diamater input field
     let arrayDiams = document.getElementsByClassName("diameter");
     // arrayDiams.forEach(function(element) {
