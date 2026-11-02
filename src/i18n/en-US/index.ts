@@ -22,7 +22,7 @@ export default {
   calculate: 'Calculate',
   savePdf: 'Save PDF',
   fileName: 'File name',
-  needTwoArchers: 'Add at least two archers with a score.',
+  needTwoArchers: 'Enter a score for at least two archers.',
   fixScores: 'Fix the scores marked in red first.',
   resultsOutdated: 'Scores changed since the last calculation.',
   groupingRadius: 'Grouping',

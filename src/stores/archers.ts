@@ -22,6 +22,8 @@ const DEFAULT_ARCHERS: SavedArcher[] = [
   { id: newId(), name: '', score: 285 },
 ];
 
+const NEW_ARCHER_SCORE = 250;
+
 // crypto.randomUUID() needs HTTPS, the app may be served over plain HTTP
 function newId(): string {
   return Date.now().toString(36) + Math.random().toString(36).slice(2, 10);
@@ -73,8 +75,11 @@ export const useArcherStore = defineStore('archers', () => {
     archers.value.filter((a) => results.value?.archers[a.id] && !resultsOutdated.value),
   );
 
+  // A new archer starts from the last entered score, so it counts right away
   function addArcher() {
-    archers.value.push({ id: newId(), name: '', score: null, radiusOverride: null });
+    const lastScore =
+      scoredArchers.value.filter((a) => isValidScore(a.score)).at(-1)?.score ?? NEW_ARCHER_SCORE;
+    archers.value.push({ id: newId(), name: '', score: lastScore, radiusOverride: null });
   }
 
   function removeArcher(id: string) {

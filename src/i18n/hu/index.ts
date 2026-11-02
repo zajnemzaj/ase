@@ -24,7 +24,7 @@ export default {
   calculate: 'Számolás',
   savePdf: 'PDF mentése',
   fileName: 'Fájlnév',
-  needTwoArchers: 'Adj meg legalább két íjászt pontszámmal.',
+  needTwoArchers: 'Adj meg pontszámot legalább két íjásznak.',
   fixScores: 'Előbb javítsd a pirossal jelölt pontszámokat.',
   resultsOutdated: 'A pontszámok változtak az utolsó számolás óta.',
   groupingRadius: 'Szórás',
