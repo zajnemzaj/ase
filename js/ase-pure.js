@@ -427,22 +427,8 @@ function convertToPdf(svg, callback) {
 }
 
 function downloadPdf(fileName, pdfDoc) {
-    // Dynamically create a link
-    let $link = $("<a>"),
-        link = $link[0],
-        dataUriString = pdfDoc.output("dataurlstring");
-
-    // On click of the link, set the HREF and download of it
-    // so that it behaves as a link to a file
-    $link.on("click", () => {
-        link.href = dataUriString;
-        link.download = fileName;
-        $link.detach(); // Remove it from the DOM once the download starts
-    });
-
-    // Add it to the body and immediately click it
-    $("body").append($link);
-    $link[0].click();
+    // jsPDF downloads it through a Blob, browsers block large data: URI downloads
+    pdfDoc.save(fileName);
 }
 
 // Save to PDF button click handler
