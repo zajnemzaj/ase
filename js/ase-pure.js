@@ -325,7 +325,7 @@ function convertToPdf(svg, callback) {
             let canvas = document.createElement("canvas"),
                 ctx = canvas.getContext("2d"),
                 // Default size was:
-                doc = new jsPDF("portrait", "mm"),
+                doc = new jspdf.jsPDF("portrait", "mm"),
                 // A4
                 //doc = new jsPDF('p', 'mm', [297, 210]);
                 // A3
