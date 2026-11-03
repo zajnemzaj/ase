@@ -35,6 +35,7 @@ export default {
   resultsOutdated: 'Scores or settings changed since the last calculation.',
   grouping: 'Grouping ⌀',
   faceDiameter: 'Target diameter',
+  faceDiameterShort: 'Target ⌀',
   calculated: 'calculated',
   enteredByUser: 'entered by user',
   resetDiameter: 'Back to calculated value',

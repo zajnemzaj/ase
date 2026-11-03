@@ -37,6 +37,7 @@ export default {
   resultsOutdated: 'A pontszámok vagy beállítások változtak az utolsó számolás óta.',
   grouping: 'Szórás ⌀',
   faceDiameter: 'Lőlap átmérője',
+  faceDiameterShort: 'Lőlap ⌀',
   calculated: 'számolt',
   enteredByUser: 'kézzel megadott',
   resetDiameter: 'Vissza a számolt értékre',

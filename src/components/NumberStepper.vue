@@ -54,7 +54,7 @@ const props = withDefaults(
     // Starting value when +/- is pressed on an empty field
     start?: number;
     label?: string;
-    hint?: string;
+    hint?: string | undefined;
     suffix?: string;
     rules?: ((value: number | null) => true | string)[];
   }>(),

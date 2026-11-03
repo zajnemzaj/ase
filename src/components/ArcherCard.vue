@@ -49,7 +49,7 @@
       />
     </q-card-section>
 
-    <q-card-section v-if="result" class="q-pt-none">
+    <q-card-section v-if="result" class="q-pt-none result-section">
       <div class="row items-center q-mb-sm text-body2 text-grey-8">
         <q-icon name="adjust" class="q-mr-xs" />
         {{ $t('grouping') }}:
@@ -62,14 +62,16 @@
         </span>
         <q-badge v-if="isReference" color="accent" class="q-ml-sm">{{ $t('reference') }}</q-badge>
       </div>
-      <div class="row items-start no-wrap q-gutter-x-sm">
+      <!-- The field stays centered, the reset button sits in the space on its right -->
+      <div class="target-row">
         <NumberStepper
           :model-value="faceDiameter"
           :min="10"
           :max="FULL_FACE_RADIUS * 2"
-          :label="`${$t('faceDiameter')} (${archer.radiusOverride === null ? $t('calculated') : $t('enteredByUser')})`"
+          :label="$t('faceDiameterShort')"
+          :hint="archer.radiusOverride === null ? undefined : $t('enteredByUser')"
           suffix="mm"
-          class="col"
+          class="target-field"
           @update:model-value="setDiameter"
         />
         <q-btn
@@ -78,7 +80,7 @@
           round
           icon="restart_alt"
           color="primary"
-          class="q-mt-sm"
+          class="reset-btn"
           :aria-label="$t('resetDiameter')"
           @click="archer.radiusOverride = null"
         >
@@ -142,11 +144,40 @@ function setDiameter(value: number | null) {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+// Score and arrow fields: side by side from 308 px (2 × 150 px + gap)
 .input-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   gap: 8px;
+}
+
+.result-section {
+  container-type: inline-size;
+}
+
+// Narrow: the field takes the width left next to the reset button
+.target-row {
+  display: grid;
+  grid-template-columns: 0 minmax(0, 1fr) auto;
+  align-items: start;
+}
+
+.target-field {
+  grid-column: 2;
+}
+
+.reset-btn {
+  grid-column: 3;
+  justify-self: start;
+  margin: 8px 0 0 4px;
+}
+
+// Once the fields above share a row, the target field is as wide as one of them
+@container (min-width: 308px) {
+  .target-row {
+    grid-template-columns: 1fr calc((100cqw - 8px) / 2) 1fr;
+  }
 }
 
 .archer-number {
