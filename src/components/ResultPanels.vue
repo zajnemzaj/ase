@@ -2,6 +2,7 @@
   <q-card flat bordered class="overflow-hidden">
     <!-- Sheet tabs on top, like the sheets of a spreadsheet -->
     <q-tabs
+      ref="tabsRef"
       v-model="slide"
       dense
       no-caps
@@ -107,7 +108,14 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue';
+import {
+  computed,
+  onBeforeUnmount,
+  onMounted,
+  ref,
+  watch,
+  type ComponentPublicInstance,
+} from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import ChartLegend from '@/components/ChartLegend.vue';
@@ -205,6 +213,35 @@ const tabs = computed<Tab[]>(() => [
 const slideNames = computed(() => tabs.value.map((tab) => tab.name));
 
 const slide = ref(slideNames.value[0]!);
+
+// Quasar's auto-scroll can stop a fraction of a pixel before the end of the tab
+// bar, which keeps the arrow active. Once scrolling settles that close to an
+// end, snap to it so the arrow fades.
+const tabsRef = ref<ComponentPublicInstance | null>(null);
+let tabsContent: HTMLElement | null = null;
+let snapTimer: ReturnType<typeof setTimeout> | undefined;
+
+function snapTabsToEdge() {
+  clearTimeout(snapTimer);
+  snapTimer = setTimeout(() => {
+    if (!tabsContent) return;
+    const max = tabsContent.scrollWidth - tabsContent.clientWidth;
+    const pos = tabsContent.scrollLeft;
+    if (pos > 0 && pos <= 2) tabsContent.scrollLeft = 0;
+    else if (pos < max && max - pos <= 2) tabsContent.scrollLeft = max;
+  }, 100);
+}
+
+onMounted(() => {
+  tabsContent =
+    (tabsRef.value?.$el as HTMLElement | undefined)?.querySelector('.q-tabs__content') ?? null;
+  tabsContent?.addEventListener('scroll', snapTabsToEdge, { passive: true });
+});
+
+onBeforeUnmount(() => {
+  clearTimeout(snapTimer);
+  tabsContent?.removeEventListener('scroll', snapTabsToEdge);
+});
 
 // Stay on a slide that still exists after archers change
 watch(slideNames, (names) => {
