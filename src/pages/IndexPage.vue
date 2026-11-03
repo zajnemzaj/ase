@@ -59,7 +59,7 @@
         />
         <q-btn
           unelevated
-          color="positive"
+          color="secondary"
           icon="picture_as_pdf"
           :label="$t('savePdf')"
           :loading="saving"

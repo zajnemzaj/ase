@@ -48,7 +48,7 @@
               : $t('mm', { value: result.groupingRadius })
           }}
         </span>
-        <q-badge v-if="isReference" color="grey-6" class="q-ml-sm">{{ $t('reference') }}</q-badge>
+        <q-badge v-if="isReference" color="accent" class="q-ml-sm">{{ $t('reference') }}</q-badge>
       </div>
       <div class="row items-start no-wrap q-gutter-x-sm">
         <NumberStepper

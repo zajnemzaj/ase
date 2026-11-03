@@ -72,7 +72,7 @@ const arrowRadius = computed(() => props.frameRadius / 140);
 }
 
 .arrow {
-  fill: #2e7d32;
+  fill: #1d3557;
   stroke: #fff;
 }
 </style>
