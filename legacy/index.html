@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Archery Score Equalify v0.0.1</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.1/css/bulma.min.css">
+  <link rel='stylesheet prefetch' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css'>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="shortcut icon" href="images/favicon-ase.png">
+
+  <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+
+</head>
+
+<body>
+  <nav class="navbar is-fixed-top is-flex-desktop">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://rebegin.dyndns.org/ase">
+      <img src="images/logo-ase.png" alt="Archery Score Equalify: Helping archers to shoot equal scores" width="28" height="28">
+    </a>
+
+    <a class="navbar-item is-hidden-desktop" href="https://rebegin.dyndns.org/ase">
+    <span><strong>Archery Score Equalify</strong></span>
+  </a>
+
+       <!-- <a class="navbar-item is-hidden-desktop" href="https://github.com/zajnemzaj/archery-score-equalify" target="_blank">
+        <span class="icon" style="color: #333;">
+          <i class="fa fa-github"></i>
+        </span>
+      </a>
+      <a class="navbar-item is-hidden-desktop" href="https://www.last.fm/user/rebegin" target="_blank">
+            <span class="icon" style="color: #333;">
+              <i class="fa fa-lastfm"></i>
+            </span>
+          </a> -->
+
+      <div id="navBurger" class="navbar-burger burger" data-target="navMenubd-example">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+
+    <div id="navMenubd-example" class="navbar-menu">
+      <div class="navbar-start">
+        <div class="navbar-item has-dropdown is-hoverable">
+         <a class="navbar-link" href="index.html">
+          Archery Score Equalify
+        </a>
+          <div class="navbar-dropdown ">
+            <a class="navbar-item navpad" href="https://rebegin.dyndns.org/ase/about.html">
+            Overview
+          </a>
+            <a id="ase-pure-html-js" class="navbar-item navpad" href="#ase-pure-html-js.html">
+            Only Javascript and html5
+          </a>
+            <a id="ase-with-css" class="navbar-item navpad" href="#ase-with-css.html">
+            With CSS
+          </a>
+            <a id="ase-bulma" class="navbar-item navpad" href="#ase-bulma.html">
+            Bulma
+          </a>
+            <a class="navbar-item navpad is-active" href="https://rebegin.dyndns.org/ase-bulma-vue">
+            Bulma & Vue.js
+          </a>
+            <a class="navbar-item navpad" href="https://rebegin.dyndns.org/ase-quasar">
+            Quasar
+          </a>
+
+            <hr class="navbar-divider">
+            <div class="navbar-item">
+              <div>
+
+                <small>
+                  <a class="bd-view-all-versions" href="/versions">Current version:</a>
+                </small>
+                <p class="is-size-6-desktop">
+                  <strong class="has-text-info">0.0.1</strong>
+                </p>
+
+              </div>
+            </div>
+          </div>
+        </div>
+<hr class="is-paddingless is-marginless"  style="background-color:light-gray;">
+<a class="navbar-item" href="others.html">
+  <span>Other projects</span>
+</a>
+        <a class="navbar-item" href="aboutme.html">
+          <span>About Me</span>
+        </a>
+      </div>
+<hr class="is-paddingless is-marginless" style="background-color:light-blue;">
+
+      <div class="navbar-end">
+   <!--     <div class="field is-grouped">
+        <a class="navbar-item" href="https://github.com/zajnemzaj/archery-score-equalify" target="_blank">
+          <span class="icon" style="color: #333;"><i class="fa fa-github"></i></span>
+        </a>
+        <a class="navbar-item" href="https://www.last.fm/user/rebegin" target="_blank">
+          <span class="icon" style="color: #000000;"><i class="fa fa-lastfm"></i></span>
+        </a> -->
+
+        <div class="navbar-item">
+          <div class="field is-grouped">
+          <p class="control">
+            <a class="button is-light" href="https://github.com/zajnemzaj/archery-score-equalify/archive/master.zip">
+            <span class="icon">
+              <i class="fa fa-download"></i>
+            </span>
+            <span>Download</span>
+          </a>
+          </p>
+            <p class="control">
+              <a class="button is-light" href="https://github.com/zajnemzaj/archery-score-equalify/archive/master.zip">
+              <span class="icon">
+                <i class="fa fa-github"></i>
+              </span>
+              <span>GitHub</span>
+            </a>
+            </p>
+            <p class="control">
+              <a class="button is-light" href="#">
+              <span class="icon">
+                <i class="fa fa-codepen"></i>
+              </span>
+              <span>CodePen</span>
+            </a>
+            </p>
+            <!-- <p class="control">
+              <a class="button is-light" href="#">
+              <span class="icon">
+                <i class="fa fa-beer"></i>
+              </span>
+              <span>Buy me a beer</span>
+            </a>
+            </p> -->
+            <p class="control">
+              <a class="button is-light" href="#">
+              <span class="icon">
+                <i class="fa fa-coffee"></i>
+              </span>
+              <span>Buy me a coffee</span>
+            </a>
+            </p>
+            <p class="control">
+              <a class="button is-light" href="#">
+              <span class="icon">
+                <i class="fa fa-sign-in"></i>
+              </span>
+              <span>Login</span>
+            </a>
+            </p>
+          </div>  <!-- field is-grouped -->
+        </div> <!-- navbar-item -->
+    <!--  </div> <!-- field is-grouped -->
+    </div> <!-- navbar-end -->
+  </div> <!-- navbar-menu -->
+  </nav>
+  <!-- <section class="hero">
+    <div class="hero-body">
+      <div class="container">
+        <h1 class="title">
+        Welcome to Archery Score Equalify
+      </h1>
+        <h2 class="subtitle">
+        Helping archers to shoot equal scores
+      </h2>
+      </div>
+    </div>
+  </section> -->
+  <div id="nav-placeholder"></div>
+  <script>
+    $(document).ready(function(){
+      $('#ase-pure-html-js').click(function(){
+      // $('.navbar-item').click(function(){
+        $("#nav-placeholder").load("ase-pure-html-js.html"); // Load html page
+        $("#navBurger").toggleClass('is-active'); // toggle burger back to default
+        $("#navMenubd-example").toggleClass('is-active'); // hide menu
+
+        $(".navbar-item").removeClass('is-active'); // remove is-active class from all menu-item
+        $("#ase-pure-html-js").toggleClass('is-active'); // add is-active class to actual menu item
+     });
+      $('#ase-with-css').click(function(){
+      // $('.navbar-item').click(function(){
+        $("#nav-placeholder").load("ase-with-css.html"); // Load html page
+        $("#navBurger").toggleClass('is-active'); // toggle burger back to default
+        $("#navMenubd-example").toggleClass('is-active'); // hide menu
+
+        $(".navbar-item").removeClass('is-active'); // remove is-active class from all menu-item
+        $("#ase-with-css").toggleClass('is-active'); // add is-active class to actual menu item
+     });
+      $('#ase-bulma').click(function(){
+      // $('.navbar-item').click(function(){
+        $("#nav-placeholder").load("ase-bulma.html"); // Load html page
+        $("#navBurger").toggleClass('is-active'); // toggle burger back to default
+        $("#navMenubd-example").toggleClass('is-active'); // hide menu
+
+        $(".navbar-item").removeClass('is-active'); // remove is-active class from all menu-item
+        $("#ase-bulma").toggleClass('is-active'); // add is-active class to actual menu item
+     });
+     // temporary loading bulma as default
+     $("#nav-placeholder").load("ase-bulma.html"); // Load html page
+        //$("#navBurger").toggleClass('is-active'); // toggle burger back to default
+       // $("#navMenubd-example").toggleClass('is-active'); // hide menu
+
+        $(".navbar-item").removeClass('is-active'); // remove is-active class from all menu-item
+        $("#ase-bulma").toggleClass('is-active'); // add is-active class to actual menu item
+     
+    });
+  </script>
+
+  <script src="js/index.js"></script>
+</body>
+</html>
