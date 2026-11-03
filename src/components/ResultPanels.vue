@@ -1,6 +1,34 @@
 <template>
-  <q-card flat bordered>
-    <q-carousel v-model="slide" swipeable animated :height="undefined" class="result-carousel">
+  <q-card flat bordered class="overflow-hidden">
+    <!-- Sheet tabs on top, like the sheets of a spreadsheet -->
+    <q-tabs
+      v-model="slide"
+      dense
+      no-caps
+      inline-label
+      align="left"
+      outside-arrows
+      mobile-arrows
+      indicator-color="transparent"
+      active-class="sheet-tab--active"
+      class="sheet-tabs"
+    >
+      <q-tab v-for="tab in tabs" :key="tab.name" :name="tab.name" class="sheet-tab">
+        <span v-if="tab.color" class="color-dot" :style="{ background: tab.color }" />
+        <q-icon v-else :name="tab.icon" size="18px" class="q-mr-xs" />
+        <span class="ellipsis sheet-tab__label">{{ tab.label }}</span>
+      </q-tab>
+    </q-tabs>
+
+    <q-carousel
+      v-model="slide"
+      swipeable
+      animated
+      transition-prev="slide-right"
+      transition-next="slide-left"
+      :height="undefined"
+      class="result-carousel"
+    >
       <q-carousel-slide
         v-for="item in faceSlides"
         :key="item.name"
@@ -62,18 +90,6 @@
         <ChartLegend :items="legend.filter((l) => !l.reference)" />
       </q-carousel-slide>
     </q-carousel>
-
-    <q-separator />
-    <div class="row justify-center q-py-sm">
-      <q-pagination
-        v-model="page"
-        :max="slideNames.length"
-        :max-pages="7"
-        direction-links
-        boundary-numbers
-        color="primary"
-      />
-    </div>
   </q-card>
 </template>
 
@@ -110,6 +126,7 @@ const faceSlides = computed(() =>
   items.value
     .map((item) => ({
       name: `face-${item.archer.id}`,
+      label: item.title,
       title: t('faceOf', { name: item.title }),
       color: item.color,
       score: item.archer.score,
@@ -150,17 +167,23 @@ const legend = computed(() =>
   })),
 );
 
-const slideNames = computed(() => [
-  ...faceSlides.value.map((s) => s.name),
-  'chart-grouping',
-  ...(faceSeries.value.length > 0 ? ['chart-face'] : []),
+interface Tab {
+  name: string;
+  label: string;
+  color?: string;
+  icon?: string;
+}
+
+const tabs = computed<Tab[]>(() => [
+  ...faceSlides.value.map((s) => ({ name: s.name, label: s.label, color: s.color })),
+  { name: 'chart-grouping', label: t('tabGrouping'), icon: 'scatter_plot' },
+  ...(faceSeries.value.length > 0
+    ? [{ name: 'chart-face', label: t('tabFaceSize'), icon: 'show_chart' }]
+    : []),
 ]);
+const slideNames = computed(() => tabs.value.map((tab) => tab.name));
 
 const slide = ref(slideNames.value[0]!);
-const page = computed({
-  get: () => slideNames.value.indexOf(slide.value) + 1,
-  set: (value: number) => (slide.value = slideNames.value[value - 1]!),
-});
 
 // Stay on a slide that still exists after archers change
 watch(slideNames, (names) => {
@@ -169,6 +192,35 @@ watch(slideNames, (names) => {
 </script>
 
 <style scoped lang="scss">
+.sheet-tabs {
+  background: #eef1f0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  padding: 6px 4px 0;
+}
+
+.sheet-tab {
+  min-height: 36px;
+  margin-right: 2px;
+  padding: 0 12px;
+  border: 1px solid transparent;
+  border-bottom: none;
+  border-radius: 8px 8px 0 0;
+  color: #5f6b69;
+}
+
+// The active sheet joins the panel below it
+.sheet-tab--active {
+  background: #fff;
+  border-color: rgba(0, 0, 0, 0.12);
+  color: $primary;
+  margin-bottom: -1px;
+  font-weight: 500;
+}
+
+.sheet-tab__label {
+  max-width: 120px;
+}
+
 .result-carousel {
   height: auto;
   min-height: 0;

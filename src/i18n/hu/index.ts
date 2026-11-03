@@ -39,6 +39,8 @@ export default {
   noPanels: 'Számolj, hogy lásd a lőlapokat és a szimulációs grafikonokat.',
   faceOf: '{name} lőlapja',
   arrowsShown: '{n} szimulált vessző, {radius} mm-es szórással',
+  tabGrouping: 'Szórás',
+  tabFaceSize: 'Lőlapméret',
   chartGroupingTitle: 'Pontszám és szórás a 40 cm-es lőlapon',
   chartGroupingText:
     'Minden pont egy szimulált 30 vesszős sorozat. Az íjász szórása azoknak a sugaraknak az átlaga, ahol a sorozatok az ő pontszáma körül vannak.',

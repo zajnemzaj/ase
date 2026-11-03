@@ -37,6 +37,8 @@ export default {
   noPanels: 'Calculate to see the target faces and simulation charts.',
   faceOf: 'Target face of {name}',
   arrowsShown: '{n} simulated arrows of a {radius} mm grouping',
+  tabGrouping: 'Grouping',
+  tabFaceSize: 'Face size',
   chartGroupingTitle: 'Score vs. grouping on the 40 cm face',
   chartGroupingText:
     'Each dot is one simulated 30-arrow round. An archer’s grouping is the average radius where the rounds score around their score.',
