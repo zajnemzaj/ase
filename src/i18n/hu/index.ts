@@ -27,7 +27,7 @@ export default {
   needTwoArchers: 'Adj meg pontszámot legalább két íjásznak.',
   fixScores: 'Előbb javítsd a pirossal jelölt pontszámokat.',
   resultsOutdated: 'A pontszámok változtak az utolsó számolás óta.',
-  grouping: 'Szórás',
+  grouping: 'Szórás ⌀',
   faceDiameter: 'Lőlap átmérője',
   calculated: 'számolt',
   enteredByUser: 'kézzel megadott',

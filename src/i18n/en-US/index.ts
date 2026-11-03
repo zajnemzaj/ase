@@ -25,7 +25,7 @@ export default {
   needTwoArchers: 'Enter a score for at least two archers.',
   fixScores: 'Fix the scores marked in red first.',
   resultsOutdated: 'Scores changed since the last calculation.',
-  grouping: 'Grouping',
+  grouping: 'Grouping ⌀',
   faceDiameter: 'Target diameter',
   calculated: 'calculated',
   enteredByUser: 'entered by user',
