@@ -2,9 +2,8 @@
   <q-card flat bordered class="archer-card">
     <q-card-section class="q-pb-sm">
       <div class="row items-center no-wrap q-gutter-x-sm">
-        <q-avatar size="36px" text-color="white" :style="{ background: color }">
-          {{ index + 1 }}
-        </q-avatar>
+        <!-- Number in the archer's chart color -->
+        <div class="archer-number text-weight-bold" :style="{ color }">{{ index + 1 }}</div>
         <q-input
           v-model="archer.name"
           :label="$t('archerName')"
@@ -108,3 +107,11 @@ function setRadius(value: number | null) {
   archer.value.radiusOverride = value === result.value?.faceRadius ? null : value;
 }
 </script>
+
+<style scoped>
+.archer-number {
+  min-width: 24px;
+  font-size: 22px;
+  text-align: center;
+}
+</style>
