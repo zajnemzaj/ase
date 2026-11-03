@@ -227,6 +227,11 @@ watch(slideNames, (names) => {
   font-weight: 500;
 }
 
+// No hover highlight on the sheet that is already open
+.sheet-tab--active :deep(.q-focus-helper) {
+  display: none;
+}
+
 .sheet-tab__label {
   max-width: 120px;
 }

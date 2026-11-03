@@ -8,7 +8,7 @@
     type="number"
     inputmode="numeric"
     input-class="text-center text-weight-medium"
-    outlined
+    borderless
     hide-bottom-space
     @update:model-value="onInput"
   >
