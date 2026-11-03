@@ -16,11 +16,10 @@
       <q-btn
         unelevated
         padding="0"
-        color="primary"
         icon="remove"
         :aria-label="$t('decrease')"
         :disable="modelValue !== null && modelValue <= min"
-        class="stepper-btn"
+        class="stepper-btn stepper-minus"
         @pointerdown.prevent="startRepeat(-step)"
         @keydown.enter.space.prevent="change(-step)"
       />
@@ -29,11 +28,10 @@
       <q-btn
         unelevated
         padding="0"
-        color="primary"
         icon="add"
         :aria-label="$t('increase')"
         :disable="modelValue !== null && modelValue >= max"
-        class="stepper-btn"
+        class="stepper-btn stepper-plus"
         @pointerdown.prevent="startRepeat(step)"
         @keydown.enter.space.prevent="change(step)"
       />
@@ -101,6 +99,17 @@ onBeforeUnmount(stopRepeat);
   // Comfortable touch target, a rounded square like the other buttons
   width: 40px;
   height: 40px;
+}
+
+// Light tinted buttons: coral for minus, teal for plus
+.stepper-minus {
+  background: #fdeee9;
+  color: #c2552d;
+}
+
+.stepper-plus {
+  background: #e3f0ee;
+  color: $primary;
 }
 
 :deep(input[type='number']) {
