@@ -14,8 +14,8 @@
   >
     <template #prepend>
       <q-btn
-        round
         unelevated
+        padding="0"
         color="primary"
         icon="remove"
         :aria-label="$t('decrease')"
@@ -27,8 +27,8 @@
     </template>
     <template #append>
       <q-btn
-        round
         unelevated
+        padding="0"
         color="primary"
         icon="add"
         :aria-label="$t('increase')"
@@ -98,9 +98,9 @@ onBeforeUnmount(stopRepeat);
 
 <style scoped lang="scss">
 .stepper-btn {
-  // Comfortable touch target
-  min-width: 40px;
-  min-height: 40px;
+  // Comfortable touch target, a rounded square like the other buttons
+  width: 40px;
+  height: 40px;
 }
 
 :deep(input[type='number']) {
