@@ -21,7 +21,7 @@
       <div class="text-h6 col">{{ $t('archers') }}</div>
     </div>
 
-    <transition-group name="archer" tag="div" class="column q-gutter-y-md">
+    <transition-group name="archer" tag="div" class="archer-list">
       <ArcherCard
         v-for="(archer, index) in store.archers"
         :key="archer.id"
@@ -153,6 +153,13 @@ async function onSavePdf() {
   margin: 0 auto;
   // Room for the sticky action bar
   padding-bottom: 96px;
+}
+
+// A grid, not a flex column: in a flex column the browser sized each card as if
+// its score and arrow fields were stacked, leaving empty space at the bottom
+.archer-list {
+  display: grid;
+  gap: 16px;
 }
 
 .add-btn,
