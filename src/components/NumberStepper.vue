@@ -107,6 +107,15 @@ onBeforeUnmount(stopRepeat);
   height: 40px;
 }
 
+// Little space between the buttons and the value, so two fields fit side by side on phones
+:deep(.q-field__prepend) {
+  padding-right: 4px;
+}
+
+:deep(.q-field__append) {
+  padding-left: 4px;
+}
+
 // Light tinted buttons: coral for minus, teal for plus
 .stepper-minus {
   background: #fdeee9;

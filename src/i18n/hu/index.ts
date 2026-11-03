@@ -23,6 +23,7 @@ export default {
   archer: '{n}. íjász',
   archerName: 'Íjász neve',
   score: 'Átlagos pontszám',
+  scoreShort: 'Átl. pontszám',
   scoreInvalid: 'Adj meg egy egész számot {min} és {max} között',
   addArcher: 'Íjász hozzáadása',
   removeArcher: 'Íjász törlése',

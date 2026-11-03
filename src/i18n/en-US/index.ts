@@ -21,6 +21,7 @@ export default {
   archer: 'Archer {n}',
   archerName: "Archer's name",
   score: 'Average score',
+  scoreShort: 'Avg. score',
   scoreInvalid: 'Enter a whole number from {min} to {max}',
   addArcher: 'Add archer',
   removeArcher: 'Remove archer',

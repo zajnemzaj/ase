@@ -25,13 +25,14 @@
       </div>
     </q-card-section>
 
-    <q-card-section class="q-pt-none">
+    <!-- Side by side when both fit, stacked only on very narrow screens -->
+    <q-card-section class="q-pt-none input-grid">
       <NumberStepper
         v-model="archer.score"
         :min="MIN_SCORE"
         :max="MAX_SCORE"
         :start="250"
-        :label="$t('score')"
+        :label="$t('scoreShort')"
         :rules="[scoreRule]"
       />
       <NumberStepper
@@ -42,10 +43,9 @@
         :step="0.1"
         :decimals="1"
         :start="DEFAULT_ARROW_DIAMETER"
-        :label="$t('arrowDiameter')"
+        :label="$t('arrowShort')"
         :rules="[arrowRule]"
         suffix="mm"
-        class="q-mt-sm"
       />
     </q-card-section>
 
@@ -143,6 +143,12 @@ function setDiameter(value: number | null) {
 </script>
 
 <style scoped>
+.input-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 8px;
+}
+
 .archer-number {
   min-width: 24px;
   font-size: 22px;
