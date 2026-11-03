@@ -194,7 +194,6 @@ watch(slideNames, (names) => {
 <style scoped lang="scss">
 .sheet-tabs {
   background: #eef1f0;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
   padding: 6px 4px 0;
 }
 
@@ -208,12 +207,11 @@ watch(slideNames, (names) => {
   color: #5f6b69;
 }
 
-// The active sheet joins the panel below it
+// The active sheet is the panel's color, so it flows into the panel without a line
 .sheet-tab--active {
   background: #fff;
   border-color: rgba(0, 0, 0, 0.12);
   color: $primary;
-  margin-bottom: -1px;
   font-weight: 500;
 }
 
