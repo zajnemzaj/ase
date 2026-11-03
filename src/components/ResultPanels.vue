@@ -29,31 +29,6 @@
       :height="undefined"
       class="result-carousel"
     >
-      <q-carousel-slide
-        v-for="item in faceSlides"
-        :key="item.name"
-        :name="item.name"
-        class="column no-wrap items-center q-pa-md"
-      >
-        <div class="text-subtitle1 text-weight-medium text-center">
-          <span class="color-dot" :style="{ background: item.color }" />
-          {{ item.title }}
-        </div>
-        <div class="text-body2 text-grey-8 text-center q-mb-sm">
-          {{ $t('score') }}: {{ item.score }} · {{ $t('faceRadius') }}:
-          {{ $t('mm', { value: item.faceRadius }) }}
-        </div>
-        <div class="face-wrap">
-          <TargetFace :face-radius="item.faceRadius" :arrows="item.arrows" :label="item.title" />
-        </div>
-        <div
-          v-if="item.groupingRadius !== null"
-          class="text-caption text-grey-7 text-center q-mt-sm"
-        >
-          {{ $t('arrowsShown', { n: item.arrows.length, radius: item.groupingRadius }) }}
-        </div>
-      </q-carousel-slide>
-
       <q-carousel-slide name="chart-grouping" class="column no-wrap q-pa-md">
         <div class="text-subtitle1 text-weight-medium text-center">
           {{ $t('chartGroupingTitle') }}
@@ -63,7 +38,8 @@
         </div>
         <ScoreChart
           :series="groupingSeries"
-          :x-max="FULL_FACE_RADIUS"
+          :x-max="FULL_FACE_RADIUS * 2"
+          :x-scale="2"
           :x-label="$t('chartAxisGrouping')"
           :y-label="$t('chartAxisScore')"
         />
@@ -83,11 +59,40 @@
         </div>
         <ScoreChart
           :series="faceSeries"
-          :x-max="FULL_FACE_RADIUS"
+          :x-max="FULL_FACE_RADIUS * 2"
+          :x-scale="2"
           :x-label="$t('chartAxisFace')"
           :y-label="$t('chartAxisScore')"
         />
         <ChartLegend :items="legend.filter((l) => !l.reference)" />
+      </q-carousel-slide>
+
+      <q-carousel-slide
+        v-for="item in faceSlides"
+        :key="item.name"
+        :name="item.name"
+        class="column no-wrap items-center q-pa-md"
+      >
+        <div class="text-subtitle1 text-weight-medium text-center">
+          <span class="color-dot" :style="{ background: item.color }" />
+          {{ item.title }}
+        </div>
+        <div class="text-body2 text-grey-8 text-center q-mb-sm">
+          {{ $t('score') }}: {{ item.score }} · {{ $t('grouping') }}:
+          {{ $t('mm', { value: item.groupingDiameter }) }}
+        </div>
+        <div class="face-wrap">
+          <TargetFace :face-radius="FULL_FACE_RADIUS" :arrows="item.arrows" :label="item.title" />
+        </div>
+        <div class="text-caption text-grey-7 text-center q-mt-sm">
+          {{
+            $t('arrowsShown', {
+              rounds: item.rounds,
+              diameter: item.groupingDiameter,
+              score: item.averageScore,
+            })
+          }}
+        </div>
       </q-carousel-slide>
     </q-carousel>
   </q-card>
@@ -100,7 +105,7 @@ import { useI18n } from 'vue-i18n';
 import ChartLegend from '@/components/ChartLegend.vue';
 import ScoreChart, { type ChartSeries } from '@/components/ScoreChart.vue';
 import TargetFace from '@/components/TargetFace.vue';
-import { FULL_FACE_RADIUS } from '@/simulation/equalify';
+import { ARROWS_PER_ROUND, FULL_FACE_RADIUS } from '@/simulation/equalify';
 import { useArcherStore } from '@/stores/archers';
 import { archerColor } from '@/utils/archerColors';
 
@@ -122,19 +127,26 @@ const items = computed(() =>
   }),
 );
 
+// Each archer's grouping shot on the 40 cm face, from the first simulation step
 const faceSlides = computed(() =>
   items.value
-    .map((item) => ({
-      name: `face-${item.archer.id}`,
-      label: item.title,
-      title: t('faceOf', { name: item.title }),
-      color: item.color,
-      score: item.archer.score,
-      faceRadius: store.faceRadiusOf(item.archer),
-      groupingRadius: item.result.groupingRadius,
-      arrows: item.result.arrows,
-    }))
-    .filter((slide): slide is typeof slide & { faceRadius: number } => slide.faceRadius !== null),
+    .filter((item) => item.result.groupingRadius !== null)
+    .map((item) => {
+      const arrows = item.result.arrows;
+      const rounds = arrows.length / ARROWS_PER_ROUND;
+      const total = arrows.reduce((sum, arrow) => sum + arrow.score, 0);
+      return {
+        name: `face-${item.archer.id}`,
+        label: item.title,
+        title: t('groupingOf', { name: item.title }),
+        color: item.color,
+        score: item.archer.score,
+        groupingDiameter: item.result.groupingRadius! * 2,
+        arrows,
+        rounds,
+        averageScore: Math.round(total / rounds),
+      };
+    }),
 );
 
 const groupingSeries = computed<ChartSeries[]>(() => {
@@ -175,11 +187,11 @@ interface Tab {
 }
 
 const tabs = computed<Tab[]>(() => [
-  ...faceSlides.value.map((s) => ({ name: s.name, label: s.label, color: s.color })),
   { name: 'chart-grouping', label: t('tabGrouping'), icon: 'scatter_plot' },
   ...(faceSeries.value.length > 0
     ? [{ name: 'chart-face', label: t('tabFaceSize'), icon: 'show_chart' }]
     : []),
+  ...faceSlides.value.map((s) => ({ name: s.name, label: s.label, color: s.color })),
 ]);
 const slideNames = computed(() => tabs.value.map((tab) => tab.name));
 

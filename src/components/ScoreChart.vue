@@ -18,12 +18,18 @@ export interface ChartSeries {
   radius: number | null;
 }
 
-const props = defineProps<{
-  series: ChartSeries[];
-  xMax: number;
-  xLabel: string;
-  yLabel: string;
-}>();
+const props = withDefaults(
+  defineProps<{
+    series: ChartSeries[];
+    // Largest x value as shown, after xScale
+    xMax: number;
+    // Multiplies the radii on the x axis, 2 shows them as diameters
+    xScale?: number;
+    xLabel: string;
+    yLabel: string;
+  }>(),
+  { xScale: 1 },
+);
 
 const container = ref<HTMLDivElement>();
 const canvas = ref<HTMLCanvasElement>();
@@ -48,7 +54,7 @@ function draw() {
 
   const plotW = width - PADDING.left - PADDING.right;
   const plotH = height - PADDING.top - PADDING.bottom;
-  const x = (radius: number) => PADDING.left + (radius / props.xMax) * plotW;
+  const x = (radius: number) => PADDING.left + ((radius * props.xScale) / props.xMax) * plotW;
   const y = (score: number) => PADDING.top + (1 - score / MAX_SCORE) * plotH;
 
   // Grid and axis labels
@@ -67,9 +73,9 @@ function draw() {
   }
   ctx.textAlign = 'center';
   ctx.textBaseline = 'top';
-  const xStep = props.xMax > 100 ? 50 : 25;
-  for (let radius = 0; radius <= props.xMax; radius += xStep) {
-    ctx.fillText(String(radius), x(radius), height - PADDING.bottom + 6);
+  const xStep = props.xMax > 200 ? 100 : props.xMax > 100 ? 50 : 25;
+  for (let value = 0; value <= props.xMax; value += xStep) {
+    ctx.fillText(String(value), x(value / props.xScale), height - PADDING.bottom + 6);
   }
   ctx.fillText(props.xLabel, PADDING.left + plotW / 2, height - 14);
   ctx.save();

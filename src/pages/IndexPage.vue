@@ -118,7 +118,7 @@ async function onSavePdf() {
     const doc = await createFacesPdf(faces, {
       name: t('pdfName'),
       score: t('pdfScore'),
-      radius: t('pdfRadius'),
+      diameter: t('pdfDiameter'),
       calculated: t('calculated'),
       enteredByUser: t('enteredByUser'),
     });

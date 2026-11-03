@@ -39,25 +39,25 @@
     <q-card-section v-if="result" class="q-pt-none">
       <div class="row items-center q-mb-sm text-body2 text-grey-8">
         <q-icon name="adjust" class="q-mr-xs" />
-        {{ $t('groupingRadius') }}:
+        {{ $t('grouping') }}:
         <span class="text-weight-medium q-ml-xs">
           {{
             result.groupingRadius === null
               ? $t('noResult')
-              : $t('mm', { value: result.groupingRadius })
+              : $t('mm', { value: result.groupingRadius * 2 })
           }}
         </span>
         <q-badge v-if="isReference" color="accent" class="q-ml-sm">{{ $t('reference') }}</q-badge>
       </div>
       <div class="row items-start no-wrap q-gutter-x-sm">
         <NumberStepper
-          :model-value="faceRadius"
-          :min="5"
-          :max="FULL_FACE_RADIUS"
-          :label="`${$t('faceRadius')} (${archer.radiusOverride === null ? $t('calculated') : $t('enteredByUser')})`"
+          :model-value="faceDiameter"
+          :min="10"
+          :max="FULL_FACE_RADIUS * 2"
+          :label="`${$t('faceDiameter')} (${archer.radiusOverride === null ? $t('calculated') : $t('enteredByUser')})`"
           suffix="mm"
           class="col"
-          @update:model-value="setRadius"
+          @update:model-value="setDiameter"
         />
         <q-btn
           v-if="archer.radiusOverride !== null"
@@ -66,10 +66,10 @@
           icon="restart_alt"
           color="primary"
           class="q-mt-sm"
-          :aria-label="$t('resetRadius')"
+          :aria-label="$t('resetDiameter')"
           @click="archer.radiusOverride = null"
         >
-          <q-tooltip>{{ $t('resetRadius') }}</q-tooltip>
+          <q-tooltip>{{ $t('resetDiameter') }}</q-tooltip>
         </q-btn>
       </div>
     </q-card-section>
@@ -93,7 +93,11 @@ const { t } = useI18n();
 
 const color = computed(() => archerColor(props.index));
 const result = computed(() => store.resultOf(props.archerId));
-const faceRadius = computed(() => store.faceRadiusOf(archer.value));
+// Shown as a diameter, archers measure faces that way
+const faceDiameter = computed(() => {
+  const radius = store.faceRadiusOf(archer.value);
+  return radius === null ? null : radius * 2;
+});
 const isReference = computed(() => archer.value.score === store.results?.minScore);
 
 function scoreRule(value: number | null): true | string {
@@ -102,9 +106,10 @@ function scoreRule(value: number | null): true | string {
   );
 }
 
-function setRadius(value: number | null) {
+function setDiameter(value: number | null) {
+  const radius = value === null ? null : value / 2;
   // Typing the calculated value back counts as calculated again
-  archer.value.radiusOverride = value === result.value?.faceRadius ? null : value;
+  archer.value.radiusOverride = radius === result.value?.faceRadius ? null : radius;
 }
 </script>
 

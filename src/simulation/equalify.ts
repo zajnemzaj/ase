@@ -150,7 +150,7 @@ export function faceRadiusForTargetScore(
 }
 
 /**
- * Arrows of a few rounds, to show an archer's grouping on their target face
+ * Arrows of a few rounds, to show an archer's grouping on a target face
  */
 export function sampleArrows(
   groupingRadius: number,
@@ -173,6 +173,7 @@ export interface ArcherScore {
 export interface ArcherResult {
   groupingRadius: number | null;
   faceRadius: number | null;
+  // A few rounds with the archer's grouping on the 40 cm face
   arrows: Arrow[];
   // Score vs. face radius points, empty for the lowest scorer
   facePoints: ChartPoint[];
@@ -216,9 +217,7 @@ export function equalify(
       ));
     }
     const arrows =
-      groupingRadius !== null && faceRadius !== null
-        ? sampleArrows(groupingRadius, faceRadius, random)
-        : [];
+      groupingRadius !== null ? sampleArrows(groupingRadius, FULL_FACE_RADIUS, random) : [];
     byScore.set(score, { groupingRadius, faceRadius, arrows, facePoints });
     onProgress?.(++done, total);
   }

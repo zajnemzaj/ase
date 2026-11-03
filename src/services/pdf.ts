@@ -14,7 +14,7 @@ export interface PdfFace {
 export interface PdfLabels {
   name: string;
   score: string;
-  radius: string;
+  diameter: string;
   calculated: string;
   enteredByUser: string;
 }
@@ -76,7 +76,7 @@ export async function createFacesPdf(faces: PdfFace[], labels: PdfLabels): Promi
     doc.text(`${labels.name}: ${face.name}`, 10, 10);
     doc.text(`${labels.score}: ${face.score}`, 10, 15);
     const how = face.calculated ? labels.calculated : labels.enteredByUser;
-    doc.text(`${labels.radius}: ${face.radius} mm (${how})`, 10, 20);
+    doc.text(`${labels.diameter}: ${face.radius * 2} mm (${how})`, 10, 20);
     drawFace(doc, face.radius);
   });
   return doc;
