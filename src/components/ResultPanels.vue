@@ -80,9 +80,17 @@
         <div class="text-body2 text-grey-8 text-center q-mb-sm">
           {{ $t('score') }}: {{ item.score }} · {{ $t('grouping') }}:
           {{ $t('mm', { value: item.groupingDiameter }) }}
+          <template v-if="item.arrowDiameter !== null">
+            · {{ $t('arrowShort') }}: {{ $t('mm', { value: item.arrowDiameter }) }}
+          </template>
         </div>
         <div class="face-wrap">
-          <TargetFace :face-radius="FULL_FACE_RADIUS" :arrows="item.arrows" :label="item.title" />
+          <TargetFace
+            :face-radius="FULL_FACE_RADIUS"
+            :arrows="item.arrows"
+            :arrow-radius="item.arrowDiameter === null ? undefined : item.arrowDiameter / 2"
+            :label="item.title"
+          />
         </div>
         <div class="text-caption text-grey-7 text-center q-mt-sm">
           {{
@@ -142,6 +150,8 @@ const faceSlides = computed(() =>
         color: item.color,
         score: item.archer.score,
         groupingDiameter: item.result.groupingRadius! * 2,
+        // Arrows are drawn at real size when their diameter was counted
+        arrowDiameter: store.results?.arrowDiameters ? item.archer.arrowDiameter : null,
         arrows,
         rounds,
         averageScore: Math.round(total / rounds),
@@ -150,10 +160,9 @@ const faceSlides = computed(() =>
 );
 
 const groupingSeries = computed<ChartSeries[]>(() => {
-  const points = store.results?.groupingPoints ?? [];
-  // The curve is shared, every archer highlights their own score on it
+  // Archers with the same arrows share a curve, each highlights their own score on it
   return items.value.map((item) => ({
-    points,
+    points: item.result.groupingPoints,
     color: item.color,
     targetScore: item.archer.score!,
     radius: item.result.groupingRadius,

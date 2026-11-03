@@ -9,12 +9,15 @@ export interface PdfFace {
   // Radius in mm, printed at real size
   radius: number;
   calculated: boolean;
+  // Arrow shaft in mm when line cutters were counted
+  arrowDiameter: number | null;
 }
 
 export interface PdfLabels {
   name: string;
   score: string;
   diameter: string;
+  arrowDiameter: string;
   calculated: string;
   enteredByUser: string;
 }
@@ -77,6 +80,9 @@ export async function createFacesPdf(faces: PdfFace[], labels: PdfLabels): Promi
     doc.text(`${labels.score}: ${face.score}`, 10, 15);
     const how = face.calculated ? labels.calculated : labels.enteredByUser;
     doc.text(`${labels.diameter}: ${face.radius * 2} mm (${how})`, 10, 20);
+    if (face.arrowDiameter !== null) {
+      doc.text(`${labels.arrowDiameter}: ${face.arrowDiameter} mm`, 10, 25);
+    }
     drawFace(doc, face.radius);
   });
   return doc;

@@ -6,7 +6,8 @@
     :rules="rules"
     :suffix="suffix"
     type="number"
-    inputmode="numeric"
+    :inputmode="decimals > 0 ? 'decimal' : 'numeric'"
+    :step="step"
     input-class="text-center text-weight-medium"
     borderless
     hide-bottom-space
@@ -48,6 +49,8 @@ const props = withDefaults(
     min: number;
     max: number;
     step?: number;
+    // Decimal places kept when stepping, e.g. 1 for 4.2
+    decimals?: number;
     // Starting value when +/- is pressed on an empty field
     start?: number;
     label?: string;
@@ -55,7 +58,7 @@ const props = withDefaults(
     suffix?: string;
     rules?: ((value: number | null) => true | string)[];
   }>(),
-  { step: 1 },
+  { step: 1, decimals: 0 },
 );
 
 const emit = defineEmits<{ 'update:modelValue': [value: number | null] }>();
@@ -67,7 +70,10 @@ function onInput(value: string | number | null) {
 function change(delta: number) {
   const current = props.modelValue ?? props.start ?? props.min;
   const base = props.modelValue === null ? current : current + delta;
-  emit('update:modelValue', Math.min(props.max, Math.max(props.min, Math.round(base))));
+  // Rounding keeps 4.2 + 0.1 at 4.3 instead of 4.300000000000001
+  const factor = 10 ** props.decimals;
+  const rounded = Math.round(base * factor) / factor;
+  emit('update:modelValue', Math.min(props.max, Math.max(props.min, rounded)));
 }
 
 // Holding a button keeps stepping, faster after a while

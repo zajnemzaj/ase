@@ -1,7 +1,14 @@
 import { defineStore, acceptHMRUpdate } from 'pinia';
+import { LocalStorage } from 'quasar';
 import { computed, ref, watch } from 'vue';
 
-import { equalify, isValidScore, type ArcherResult, type ChartPoint } from '@/simulation/equalify';
+import {
+  DEFAULT_ARROW_DIAMETER,
+  equalify,
+  isValidArrowDiameter,
+  isValidScore,
+  type ArcherResult,
+} from '@/simulation/equalify';
 import { localArcherRepository, type SavedArcher } from '@/services/archerRepository';
 
 export interface Archer extends SavedArcher {
@@ -10,17 +17,20 @@ export interface Archer extends SavedArcher {
 }
 
 interface Results {
-  // Scores the results were calculated from, by archer id
-  scores: Record<string, number>;
+  // Inputs the results were calculated from, by archer id
+  inputs: Record<string, string>;
   minScore: number;
   archers: Record<string, ArcherResult>;
-  groupingPoints: ChartPoint[];
+  // Arrow diameters were counted (line cutters)
+  arrowDiameters: boolean;
 }
 
 const DEFAULT_ARCHERS: SavedArcher[] = [
-  { id: newId(), name: '', score: 245 },
-  { id: newId(), name: '', score: 285 },
+  { id: newId(), name: '', score: 245, arrowDiameter: DEFAULT_ARROW_DIAMETER },
+  { id: newId(), name: '', score: 285, arrowDiameter: DEFAULT_ARROW_DIAMETER },
 ];
+
+const ARROW_DIAMETERS_KEY = 'ase.arrowDiameters';
 
 const NEW_ARCHER_SCORE = 250;
 
@@ -35,6 +45,12 @@ export const useArcherStore = defineStore('archers', () => {
   const results = ref<Results | null>(null);
   const calculating = ref(false);
   const loaded = ref(false);
+  // Count arrow diameters, so arrows touching a higher ring score it
+  const useArrowDiameters = ref(LocalStorage.getItem(ARROW_DIAMETERS_KEY) === true);
+  // How long the last calculation took, in ms
+  const lastDuration = ref<number | null>(null);
+
+  watch(useArrowDiameters, (value) => LocalStorage.set(ARROW_DIAMETERS_KEY, value));
 
   async function load() {
     const saved = await repository.load();
@@ -49,13 +65,31 @@ export const useArcherStore = defineStore('archers', () => {
     archers,
     (list) => {
       if (!loaded.value) return;
-      void repository.save(list.map(({ id, name, score }) => ({ id, name, score })));
+      void repository.save(
+        list.map(({ id, name, score, arrowDiameter }) => ({ id, name, score, arrowDiameter })),
+      );
     },
     { deep: true },
   );
 
   const scoredArchers = computed(() => archers.value.filter((a) => a.score !== null));
-  const invalidArchers = computed(() => scoredArchers.value.filter((a) => !isValidScore(a.score)));
+  const invalidArchers = computed(() =>
+    scoredArchers.value.filter(
+      (a) =>
+        !isValidScore(a.score) ||
+        (useArrowDiameters.value && !isValidArrowDiameter(a.arrowDiameter)),
+    ),
+  );
+
+  // Arrow radius used in the simulation, 0 scores arrows as points
+  function arrowRadiusOf(archer: Archer): number {
+    return useArrowDiameters.value ? archer.arrowDiameter! / 2 : 0;
+  }
+
+  // What a result depends on, to tell when it's outdated
+  function inputOf(archer: Archer): string {
+    return `${archer.score}|${arrowRadiusOf(archer)}`;
+  }
   const canCalculate = computed(
     () => scoredArchers.value.length >= 2 && invalidArchers.value.length === 0,
   );
@@ -63,10 +97,10 @@ export const useArcherStore = defineStore('archers', () => {
   // Results are outdated when a scored archer was added, removed or changed
   const resultsOutdated = computed(() => {
     if (!results.value) return false;
-    const scores = results.value.scores;
+    const inputs = results.value.inputs;
     return (
-      scoredArchers.value.length !== Object.keys(scores).length ||
-      scoredArchers.value.some((a) => scores[a.id] !== a.score)
+      scoredArchers.value.length !== Object.keys(inputs).length ||
+      scoredArchers.value.some((a) => inputs[a.id] !== inputOf(a))
     );
   });
 
@@ -79,7 +113,14 @@ export const useArcherStore = defineStore('archers', () => {
   function addArcher() {
     const lastScore =
       scoredArchers.value.filter((a) => isValidScore(a.score)).at(-1)?.score ?? NEW_ARCHER_SCORE;
-    archers.value.push({ id: newId(), name: '', score: lastScore, radiusOverride: null });
+    const lastArrow = archers.value.at(-1)?.arrowDiameter ?? DEFAULT_ARROW_DIAMETER;
+    archers.value.push({
+      id: newId(),
+      name: '',
+      score: lastScore,
+      arrowDiameter: lastArrow,
+      radiusOverride: null,
+    });
   }
 
   function removeArcher(id: string) {
@@ -101,13 +142,19 @@ export const useArcherStore = defineStore('archers', () => {
     // Let the progress indicator render before the simulation blocks the thread
     await new Promise((resolve) => setTimeout(resolve, 50));
     try {
-      const input = scoredArchers.value.map((a) => ({ id: a.id, score: a.score! }));
+      const input = scoredArchers.value.map((a) => ({
+        id: a.id,
+        score: a.score!,
+        arrowRadius: arrowRadiusOf(a),
+      }));
+      const start = performance.now();
       const result = equalify(input);
+      lastDuration.value = Math.round(performance.now() - start);
       results.value = {
-        scores: Object.fromEntries(input.map((a) => [a.id, a.score])),
+        inputs: Object.fromEntries(scoredArchers.value.map((a) => [a.id, inputOf(a)])),
         minScore: result.minScore,
         archers: result.archers,
-        groupingPoints: result.groupingPoints,
+        arrowDiameters: useArrowDiameters.value,
       };
       for (const archer of archers.value) archer.radiusOverride = null;
     } finally {
@@ -119,6 +166,8 @@ export const useArcherStore = defineStore('archers', () => {
     archers,
     results,
     calculating,
+    useArrowDiameters,
+    lastDuration,
     load,
     invalidArchers,
     canCalculate,

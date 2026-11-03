@@ -51,6 +51,8 @@ const props = withDefaults(
     arrows?: Arrow[];
     // Radius shown by the whole picture, so faces of different sizes compare
     frameRadius?: number;
+    // Real arrow radius in mm; without it arrows get a visible default size
+    arrowRadius?: number | undefined;
     label?: string;
   }>(),
   { arrows: () => [], frameRadius: FULL_FACE_RADIUS },
@@ -60,7 +62,7 @@ const rings = computed(() => faceRings(props.faceRadius));
 // Lines stay visible on small faces but don't swamp large ones
 const lineWidth = computed(() => Math.max(props.faceRadius / 250, props.frameRadius / 600));
 const cross = computed(() => props.faceRadius / 100);
-const arrowRadius = computed(() => props.frameRadius / 140);
+const arrowRadius = computed(() => props.arrowRadius ?? props.frameRadius / 140);
 </script>
 
 <style scoped lang="scss">

@@ -1,6 +1,21 @@
 <template>
   <q-page class="page q-pa-md">
-    <div class="text-body2 text-grey-8 q-mb-md">{{ $t('appSubtitle') }}</div>
+    <div class="text-body2 text-grey-8 q-mb-sm">{{ $t('appSubtitle') }}</div>
+
+    <div class="q-mb-md">
+      <q-toggle
+        v-model="store.useArrowDiameters"
+        :label="$t('useArrowDiameters')"
+        color="primary"
+        class="q-ml-n-sm"
+      />
+      <div class="text-caption text-grey-7">
+        {{ $t('arrowDiametersHint') }}
+        <span v-if="store.lastDuration !== null">
+          {{ $t('lastCalculation', { ms: store.lastDuration }) }}
+        </span>
+      </div>
+    </div>
 
     <div class="row items-center q-mb-sm">
       <div class="text-h6 col">{{ $t('archers') }}</div>
@@ -110,6 +125,7 @@ async function onSavePdf() {
           score: archer.score!,
           radius,
           calculated: archer.radiusOverride === null,
+          arrowDiameter: store.results?.arrowDiameters ? archer.arrowDiameter : null,
         },
       ];
     });
@@ -119,6 +135,7 @@ async function onSavePdf() {
       name: t('pdfName'),
       score: t('pdfScore'),
       diameter: t('pdfDiameter'),
+      arrowDiameter: t('arrowDiameter'),
       calculated: t('calculated'),
       enteredByUser: t('enteredByUser'),
     });

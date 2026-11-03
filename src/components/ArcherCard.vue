@@ -34,6 +34,19 @@
         :label="$t('score')"
         :rules="[scoreRule]"
       />
+      <NumberStepper
+        v-if="store.useArrowDiameters"
+        v-model="archer.arrowDiameter"
+        :min="MIN_ARROW_DIAMETER"
+        :max="MAX_ARROW_DIAMETER"
+        :step="0.1"
+        :decimals="1"
+        :start="DEFAULT_ARROW_DIAMETER"
+        :label="$t('arrowDiameter')"
+        :rules="[arrowRule]"
+        suffix="mm"
+        class="q-mt-sm"
+      />
     </q-card-section>
 
     <q-card-section v-if="result" class="q-pt-none">
@@ -81,7 +94,16 @@ import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import NumberStepper from '@/components/NumberStepper.vue';
-import { FULL_FACE_RADIUS, MAX_SCORE, MIN_SCORE, isValidScore } from '@/simulation/equalify';
+import {
+  DEFAULT_ARROW_DIAMETER,
+  FULL_FACE_RADIUS,
+  MAX_ARROW_DIAMETER,
+  MAX_SCORE,
+  MIN_ARROW_DIAMETER,
+  MIN_SCORE,
+  isValidArrowDiameter,
+  isValidScore,
+} from '@/simulation/equalify';
 import { useArcherStore } from '@/stores/archers';
 import { archerColor } from '@/utils/archerColors';
 
@@ -103,6 +125,13 @@ const isReference = computed(() => archer.value.score === store.results?.minScor
 function scoreRule(value: number | null): true | string {
   return (
     value === null || isValidScore(value) || t('scoreInvalid', { min: MIN_SCORE, max: MAX_SCORE })
+  );
+}
+
+function arrowRule(value: number | null): true | string {
+  return (
+    isValidArrowDiameter(value) ||
+    t('arrowDiameterInvalid', { min: MIN_ARROW_DIAMETER, max: MAX_ARROW_DIAMETER })
   );
 }
 

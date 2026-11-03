@@ -21,6 +21,11 @@ export const SCORE_TOLERANCE = 5;
 export const GROUPING_RUNS = 32;
 export const ROUNDS_PER_FACE_SIZE = 10;
 
+// Arrow shafts, in mm. Indoor arrows are at most 9.3 mm by World Archery rules.
+export const DEFAULT_ARROW_DIAMETER = 4.2;
+export const MIN_ARROW_DIAMETER = 2;
+export const MAX_ARROW_DIAMETER = 12;
+
 // Even arrows spread over the whole 40 cm face average about 115 points,
 // lower scores can't be reached; 125 is the lowest that reliably works
 export const MIN_SCORE = 125;
@@ -40,6 +45,12 @@ export interface ChartPoint {
   score: number;
 }
 
+export function isValidArrowDiameter(diameter: number | null | undefined): diameter is number {
+  return (
+    typeof diameter === 'number' && diameter >= MIN_ARROW_DIAMETER && diameter <= MAX_ARROW_DIAMETER
+  );
+}
+
 export function isValidScore(score: number | null | undefined): score is number {
   return Number.isInteger(score) && score! >= MIN_SCORE && score! <= MAX_SCORE;
 }
@@ -52,9 +63,16 @@ function randomInt(maxNo: number, random: RandomFn): number {
 }
 
 /**
- * Shoots one arrow inside the grouping circle and scores it on the target face
+ * Shoots one arrow inside the grouping circle and scores it on the target face.
+ * With an arrow radius the arrow is a circle and counts the higher ring it
+ * touches (a line cutter), as in competition; 0 treats it as a point.
  */
-export function shootArrow(groupingRadius: number, faceRadius: number, random: RandomFn): Arrow {
+export function shootArrow(
+  groupingRadius: number,
+  faceRadius: number,
+  random: RandomFn,
+  arrowRadius = 0,
+): Arrow {
   const ringWidth = faceRadius / 10;
   let x: number;
   let y: number;
@@ -65,14 +83,20 @@ export function shootArrow(groupingRadius: number, faceRadius: number, random: R
     y = randomInt(groupingRadius * 2, random) - groupingRadius;
     distance = Math.sqrt(x * x + y * y);
   } while (distance > groupingRadius);
-  const ring = Math.max(1, Math.ceil(distance / ringWidth));
+  // The edge of the arrow closest to the center decides the ring
+  const ring = Math.max(1, Math.ceil((distance - arrowRadius) / ringWidth));
   return { x, y, score: Math.max(0, 11 - ring) };
 }
 
-export function shootRound(groupingRadius: number, faceRadius: number, random: RandomFn): number {
+export function shootRound(
+  groupingRadius: number,
+  faceRadius: number,
+  random: RandomFn,
+  arrowRadius = 0,
+): number {
   let score = 0;
   for (let i = 0; i < ARROWS_PER_ROUND; i++) {
-    score += shootArrow(groupingRadius, faceRadius, random).score;
+    score += shootArrow(groupingRadius, faceRadius, random, arrowRadius).score;
   }
   return score;
 }
@@ -80,11 +104,12 @@ export function shootRound(groupingRadius: number, faceRadius: number, random: R
 /**
  * One round at each grouping radius from 200 mm to 1 mm on the 40 cm face,
  * repeated for every run. It doesn't depend on any archer's score, so one
- * curve serves every archer.
+ * curve serves every archer with the same arrows.
  * @return curve[run][radius - 1] = round score
  */
 export function simulateGroupingCurve(
   random: RandomFn,
+  arrowRadius = 0,
   runs = GROUPING_RUNS,
   onRun?: (run: number) => void,
 ): number[][] {
@@ -92,7 +117,7 @@ export function simulateGroupingCurve(
   for (let run = 0; run < runs; run++) {
     const scores: number[] = [];
     for (let radius = 1; radius <= FULL_FACE_RADIUS; radius++) {
-      scores.push(shootRound(radius, FULL_FACE_RADIUS, random));
+      scores.push(shootRound(radius, FULL_FACE_RADIUS, random, arrowRadius));
     }
     curve.push(scores);
     onRun?.(run);
@@ -132,13 +157,14 @@ export function faceRadiusForTargetScore(
   groupingRadius: number,
   targetScore: number,
   random: RandomFn,
+  arrowRadius = 0,
 ): { radius: number | null; points: ChartPoint[] } {
   const points: ChartPoint[] = [];
   let radiusSum = 0;
   let radiusCount = 0;
   for (let faceRadius = FULL_FACE_RADIUS; faceRadius >= groupingRadius; faceRadius--) {
     for (let i = 0; i < ROUNDS_PER_FACE_SIZE; i++) {
-      const score = shootRound(groupingRadius, faceRadius, random);
+      const score = shootRound(groupingRadius, faceRadius, random, arrowRadius);
       points.push({ radius: faceRadius, score });
       if (Math.abs(score - targetScore) <= SCORE_TOLERANCE) {
         radiusSum += faceRadius;
@@ -156,11 +182,12 @@ export function sampleArrows(
   groupingRadius: number,
   faceRadius: number,
   random: RandomFn,
+  arrowRadius = 0,
   rounds = 3,
 ): Arrow[] {
   const arrows: Arrow[] = [];
   for (let i = 0; i < rounds * ARROWS_PER_ROUND; i++) {
-    arrows.push(shootArrow(groupingRadius, faceRadius, random));
+    arrows.push(shootArrow(groupingRadius, faceRadius, random, arrowRadius));
   }
   return arrows;
 }
@@ -168,6 +195,8 @@ export function sampleArrows(
 export interface ArcherScore {
   id: string;
   score: number;
+  // 0 scores arrows as points, without line cutters
+  arrowRadius: number;
 }
 
 export interface ArcherResult {
@@ -177,18 +206,18 @@ export interface ArcherResult {
   arrows: Arrow[];
   // Score vs. face radius points, empty for the lowest scorer
   facePoints: ChartPoint[];
+  // Score vs. grouping radius on the 40 cm face with the archer's arrows, all runs
+  groupingPoints: ChartPoint[];
 }
 
 export interface EqualifyResult {
   minScore: number;
   archers: Record<string, ArcherResult>;
-  // Score vs. grouping radius on the 40 cm face, all runs
-  groupingPoints: ChartPoint[];
 }
 
 /**
- * Calculates grouping and target face radius for every archer.
- * Archers with the same score get the same results.
+ * Calculates grouping and target face radius for every archer, each with
+ * their own arrows. Archers with the same score and arrows get the same results.
  */
 export function equalify(
   archers: ArcherScore[],
@@ -196,15 +225,30 @@ export function equalify(
   onProgress?: (done: number, total: number) => void,
 ): EqualifyResult {
   const minScore = Math.min(...archers.map((a) => a.score));
-  const distinctScores = [...new Set(archers.map((a) => a.score))];
-  const total = GROUPING_RUNS + distinctScores.length;
+  const arrowRadii = [...new Set(archers.map((a) => a.arrowRadius))];
+  const key = (a: ArcherScore) => `${a.score}|${a.arrowRadius}`;
+  const distinct = [...new Map(archers.map((a) => [key(a), a])).values()];
+  const total = GROUPING_RUNS * arrowRadii.length + distinct.length;
   let done = 0;
 
-  const curve = simulateGroupingCurve(random, GROUPING_RUNS, () => onProgress?.(++done, total));
+  // One grouping curve per arrow size
+  const curves = new Map(
+    arrowRadii.map((arrowRadius) => [
+      arrowRadius,
+      simulateGroupingCurve(random, arrowRadius, GROUPING_RUNS, () => onProgress?.(++done, total)),
+    ]),
+  );
+  const curvePoints = new Map(
+    [...curves].map(([arrowRadius, curve]) => [
+      arrowRadius,
+      curve.flatMap((scores) => scores.map((score, i) => ({ radius: i + 1, score }))),
+    ]),
+  );
 
-  const byScore = new Map<number, ArcherResult>();
-  for (const score of distinctScores) {
-    const groupingRadius = groupingRadiusForScore(curve, score);
+  const byKey = new Map<string, ArcherResult>();
+  for (const archer of distinct) {
+    const { score, arrowRadius } = archer;
+    const groupingRadius = groupingRadiusForScore(curves.get(arrowRadius)!, score);
     let faceRadius: number | null = null;
     let facePoints: ChartPoint[] = [];
     if (score === minScore) {
@@ -214,20 +258,26 @@ export function equalify(
         groupingRadius,
         minScore,
         random,
+        arrowRadius,
       ));
     }
     const arrows =
-      groupingRadius !== null ? sampleArrows(groupingRadius, FULL_FACE_RADIUS, random) : [];
-    byScore.set(score, { groupingRadius, faceRadius, arrows, facePoints });
+      groupingRadius !== null
+        ? sampleArrows(groupingRadius, FULL_FACE_RADIUS, random, arrowRadius)
+        : [];
+    byKey.set(key(archer), {
+      groupingRadius,
+      faceRadius,
+      arrows,
+      facePoints,
+      groupingPoints: curvePoints.get(arrowRadius)!,
+    });
     onProgress?.(++done, total);
   }
 
-  const result: EqualifyResult = { minScore, archers: {}, groupingPoints: [] };
+  const result: EqualifyResult = { minScore, archers: {} };
   for (const archer of archers) {
-    result.archers[archer.id] = byScore.get(archer.score)!;
-  }
-  for (const scores of curve) {
-    scores.forEach((score, i) => result.groupingPoints.push({ radius: i + 1, score }));
+    result.archers[archer.id] = byKey.get(key(archer))!;
   }
   return result;
 }
