@@ -95,7 +95,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useQuasar } from 'quasar';
 import { useI18n } from 'vue-i18n';
 
@@ -109,6 +109,11 @@ const { t } = useI18n();
 const $q = useQuasar();
 
 const fileName = ref('targetfaces');
+
+// Calculate right away, so the saved archers' panels are there on opening
+onMounted(() => {
+  if (store.canCalculate && !store.results) void store.calculate();
+});
 const saving = ref(false);
 
 const message = computed(() => {
