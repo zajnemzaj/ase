@@ -68,7 +68,7 @@ function drawBrand(doc: jsPDF, logo: Uint8Array, appTitle: string) {
   doc.addImage(logo, 'PNG', logoX, BRAND.top, BRAND.logoSize, BRAND.logoSize, 'logo');
   const textX = logoX - BRAND.gap;
   doc.setFontSize(12);
-  doc.setTextColor('#0b4f47');
+  doc.setTextColor('#0f6273');
   doc.text(appTitle, textX, BRAND.top + 5, { align: 'right' });
   doc.setFontSize(8);
   doc.setTextColor('#555555');

@@ -125,7 +125,7 @@ onBeforeUnmount(stopRepeat);
 }
 
 .stepper-plus {
-  background: #e3f0ee;
+  background: #e2eff2;
   color: $primary;
 }
 
