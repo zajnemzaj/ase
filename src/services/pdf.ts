@@ -29,7 +29,7 @@ export interface PdfLabels {
 const FACE_BOX = { x: 5, y: 49, size: 200 };
 
 // Printed under the name in the top right corner, the live site's address
-const APP_ADDRESS = 'rebegin.ddns.net/ase';
+const APP_ADDRESS = 'https://rebegin.ddns.net/ase';
 
 // Logo, name and address on the top right, level with the face data on the left
 const BRAND = { right: 200, top: 5, logoSize: 12, gap: 2 };
@@ -69,7 +69,31 @@ function drawBrand(doc: jsPDF, logo: Uint8Array, appTitle: string) {
   doc.text(appTitle, textX, BRAND.top + 5, { align: 'right' });
   doc.setFontSize(8);
   doc.setTextColor('#555555');
-  doc.text(APP_ADDRESS, textX, BRAND.top + 10, { align: 'right' });
+  const addressY = BRAND.top + 10;
+  doc.text(APP_ADDRESS, textX, addressY, { align: 'right' });
+  // Globe in front of the address, centered on its lowercase letters
+  const globeRadius = 1.3;
+  drawGlobe(
+    doc,
+    textX - doc.getTextWidth(APP_ADDRESS) - globeRadius - 1,
+    addressY - 1,
+    globeRadius,
+  );
+}
+
+// A small line-drawn globe, the usual sign for a web address
+function drawGlobe(doc: jsPDF, cx: number, cy: number, r: number) {
+  doc.setDrawColor('#555555');
+  doc.setLineWidth(0.15);
+  doc.circle(cx, cy, r, 'S');
+  doc.ellipse(cx, cy, r * 0.45, r, 'S');
+  doc.line(cx, cy - r, cx, cy + r);
+  doc.line(cx - r, cy, cx + r, cy);
+  // Latitudes, shortened to stay inside the circle
+  const latitude = r * 0.5;
+  const halfWidth = Math.sqrt(r * r - latitude * latitude);
+  doc.line(cx - halfWidth, cy - latitude, cx + halfWidth, cy - latitude);
+  doc.line(cx - halfWidth, cy + latitude, cx + halfWidth, cy + latitude);
 }
 
 function drawFace(doc: jsPDF, radius: number) {
