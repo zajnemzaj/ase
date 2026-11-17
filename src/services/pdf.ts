@@ -29,7 +29,7 @@ export interface PdfLabels {
 const FACE_BOX = { x: 5, y: 49, size: 200 };
 
 // Printed under the name in the top right corner, the live site's address
-const APP_ADDRESS = 'https://rebegin.ddns.net/ase';
+const APP_ADDRESS = 'rebegin.ddns.net/ase';
 
 // Logo, name and address on the top right, level with the face data on the left
 const BRAND = { right: 200, top: 5, logoSize: 12, gap: 2 };
