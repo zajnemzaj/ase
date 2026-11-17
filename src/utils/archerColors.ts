@@ -1,6 +1,6 @@
 // Distinct colors for archers on the charts and in the list, starting with the theme colors
 const COLORS = [
-  '#0f6273',
+  '#167585',
   '#e63946',
   '#1e88e5',
   '#f4a261',
