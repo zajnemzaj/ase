@@ -31,8 +31,11 @@ const FACE_BOX = { x: 5, y: 49, size: 200 };
 // Printed under the name in the top right corner, the live site's address
 const APP_ADDRESS = 'rebegin.ddns.net/ase';
 
-// Logo, name and address on the top right, level with the face data on the left
-const BRAND = { right: 200, top: 5, logoSize: 12, gap: 2 };
+// Logo, name and address on the top right, flush with the right edge of the face box
+const BRAND = { right: FACE_BOX.x + FACE_BOX.size, top: 5, logoSize: 12, gap: 2 };
+
+// Archer data on the top left, flush with the left edge of the face box
+const TEXT_LEFT = FACE_BOX.x;
 
 let fontBase64: Promise<string> | undefined;
 
@@ -132,12 +135,12 @@ export async function createFacesPdf(faces: PdfFace[], labels: PdfLabels): Promi
     drawBrand(doc, logo, labels.appTitle);
     doc.setFontSize(9);
     doc.setTextColor('#000000');
-    doc.text(`${labels.name}: ${face.name}`, 10, 10);
-    doc.text(`${labels.score}: ${face.score}`, 10, 15);
+    doc.text(`${labels.name}: ${face.name}`, TEXT_LEFT, 10);
+    doc.text(`${labels.score}: ${face.score}`, TEXT_LEFT, 15);
     const how = face.calculated ? labels.calculated : labels.enteredByUser;
-    doc.text(`${labels.diameter}: ${face.radius * 2} mm (${how})`, 10, 20);
+    doc.text(`${labels.diameter}: ${face.radius * 2} mm (${how})`, TEXT_LEFT, 20);
     if (face.arrowDiameter !== null) {
-      doc.text(`${labels.arrowDiameter}: ${face.arrowDiameter} mm`, 10, 25);
+      doc.text(`${labels.arrowDiameter}: ${face.arrowDiameter} mm`, TEXT_LEFT, 25);
     }
     drawFace(doc, face.radius);
   });
