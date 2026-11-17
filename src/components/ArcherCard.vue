@@ -49,7 +49,13 @@
       />
     </q-card-section>
 
-    <q-card-section v-if="result" class="q-pt-none result-section">
+    <!-- Outdated results stay dimmed instead of disappearing: removing them moved
+         the page under a tapping finger, and the tap landed on "Add archer" -->
+    <q-card-section
+      v-if="result"
+      class="q-pt-none result-section"
+      :class="{ 'result-outdated': store.resultsOutdated }"
+    >
       <div class="row items-center q-mb-sm text-body2 text-grey-8">
         <q-icon name="adjust" class="q-mr-xs" />
         {{ $t('grouping') }}:
@@ -71,6 +77,7 @@
           :label="$t('faceDiameterShort')"
           :hint="archer.radiusOverride === null ? undefined : $t('enteredByUser')"
           suffix="mm"
+          :disable="store.resultsOutdated"
           class="target-field"
           @update:model-value="setDiameter"
         />
@@ -80,6 +87,7 @@
           round
           icon="restart_alt"
           color="primary"
+          :disable="store.resultsOutdated"
           class="reset-btn"
           :aria-label="$t('resetDiameter')"
           @click="archer.radiusOverride = null"
@@ -116,10 +124,10 @@ const archer = computed(() => store.archers.find((a) => a.id === props.archerId)
 const { t } = useI18n();
 
 const color = computed(() => archerColor(props.index));
-const result = computed(() => store.resultOf(props.archerId));
+const result = computed(() => store.lastResultOf(props.archerId));
 // Shown as a diameter, archers measure faces that way
 const faceDiameter = computed(() => {
-  const radius = store.faceRadiusOf(archer.value);
+  const radius = archer.value.radiusOverride ?? result.value?.faceRadius ?? null;
   return radius === null ? null : radius * 2;
 });
 const isReference = computed(() => archer.value.score === store.results?.minScore);
@@ -154,6 +162,11 @@ function setDiameter(value: number | null) {
 
 .result-section {
   container-type: inline-size;
+  transition: opacity 0.2s;
+}
+
+.result-outdated {
+  opacity: 0.45;
 }
 
 // Narrow: the field takes the width left next to the reset button

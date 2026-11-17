@@ -5,6 +5,7 @@
     :hint="hint"
     :rules="rules"
     :suffix="suffix"
+    :disable="disable"
     type="number"
     :inputmode="decimals > 0 ? 'decimal' : 'numeric'"
     :step="step"
@@ -19,7 +20,7 @@
         padding="0"
         icon="remove"
         :aria-label="$t('decrease')"
-        :disable="modelValue !== null && modelValue <= min"
+        :disable="disable || (modelValue !== null && modelValue <= min)"
         class="stepper-btn stepper-minus"
         @pointerdown.prevent="startRepeat(-step)"
         @keydown.enter.space.prevent="change(-step)"
@@ -31,7 +32,7 @@
         padding="0"
         icon="add"
         :aria-label="$t('increase')"
-        :disable="modelValue !== null && modelValue >= max"
+        :disable="disable || (modelValue !== null && modelValue >= max)"
         class="stepper-btn stepper-plus"
         @pointerdown.prevent="startRepeat(step)"
         @keydown.enter.space.prevent="change(step)"
@@ -57,8 +58,9 @@ const props = withDefaults(
     hint?: string | undefined;
     suffix?: string;
     rules?: ((value: number | null) => true | string)[];
+    disable?: boolean;
   }>(),
-  { step: 1, decimals: 0 },
+  { step: 1, decimals: 0, disable: false },
 );
 
 const emit = defineEmits<{ 'update:modelValue': [value: number | null] }>();

@@ -131,6 +131,11 @@ export const useArcherStore = defineStore('archers', () => {
     return resultsOutdated.value ? null : (results.value?.archers[id] ?? null);
   }
 
+  // Last calculated result even if outdated, so cards keep their layout while editing
+  function lastResultOf(id: string): ArcherResult | null {
+    return results.value?.archers[id] ?? null;
+  }
+
   // Radius printed on the PDF: set by hand or calculated
   function faceRadiusOf(archer: Archer): number | null {
     return archer.radiusOverride ?? resultOf(archer.id)?.faceRadius ?? null;
@@ -176,6 +181,7 @@ export const useArcherStore = defineStore('archers', () => {
     addArcher,
     removeArcher,
     resultOf,
+    lastResultOf,
     faceRadiusOf,
     calculate,
   };
