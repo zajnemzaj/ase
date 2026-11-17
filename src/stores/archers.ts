@@ -31,6 +31,7 @@ const DEFAULT_ARCHERS: SavedArcher[] = [
 ];
 
 const ARROW_DIAMETERS_KEY = 'ase.arrowDiameters';
+const PRINT_FULL_FACE_KEY = 'ase.printFullFace';
 
 const NEW_ARCHER_SCORE = 250;
 
@@ -47,10 +48,13 @@ export const useArcherStore = defineStore('archers', () => {
   const loaded = ref(false);
   // Count arrow diameters, so arrows touching a higher ring score it
   const useArrowDiameters = ref(LocalStorage.getItem(ARROW_DIAMETERS_KEY) === true);
+  // Put the 40 cm faces in the PDF too; off when archers bring official faces
+  const printFullFace = ref(LocalStorage.getItem(PRINT_FULL_FACE_KEY) !== false);
   // How long the last calculation took, in ms
   const lastDuration = ref<number | null>(null);
 
   watch(useArrowDiameters, (value) => LocalStorage.set(ARROW_DIAMETERS_KEY, value));
+  watch(printFullFace, (value) => LocalStorage.set(PRINT_FULL_FACE_KEY, value));
 
   async function load() {
     const saved = await repository.load();
@@ -172,6 +176,7 @@ export const useArcherStore = defineStore('archers', () => {
     results,
     calculating,
     useArrowDiameters,
+    printFullFace,
     lastDuration,
     load,
     invalidArchers,

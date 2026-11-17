@@ -15,6 +15,13 @@
           {{ $t('lastCalculation', { ms: store.lastDuration }) }}
         </span>
       </div>
+      <q-toggle
+        v-model="store.printFullFace"
+        :label="$t('printFullFace')"
+        color="primary"
+        class="q-ml-n-sm q-mt-xs"
+      />
+      <div class="text-caption text-grey-7">{{ $t('printFullFaceHint') }}</div>
     </div>
 
     <div class="row items-center q-mb-sm">
@@ -94,6 +101,7 @@ import { useI18n } from 'vue-i18n';
 
 import ArcherCard from '@/components/ArcherCard.vue';
 import ResultPanels from '@/components/ResultPanels.vue';
+import { FULL_FACE_RADIUS } from '@/simulation/equalify';
 import { useArcherStore } from '@/stores/archers';
 
 const store = useArcherStore();
@@ -118,6 +126,8 @@ async function onSavePdf() {
     const faces = store.calculatedArchers.flatMap((archer) => {
       const radius = store.faceRadiusOf(archer);
       if (radius === null) return [];
+      // Archers using their own official 40 cm faces don't need them printed
+      if (!store.printFullFace && radius === FULL_FACE_RADIUS) return [];
       const index = store.archers.indexOf(archer);
       return [
         {
@@ -129,6 +139,10 @@ async function onSavePdf() {
         },
       ];
     });
+    if (faces.length === 0) {
+      $q.notify({ type: 'warning', message: t('nothingToPrint'), position: 'top' });
+      return;
+    }
     // jsPDF is large, it's only loaded when a PDF is saved
     const { createFacesPdf, savePdf } = await import('@/services/pdf');
     const doc = await createFacesPdf(faces, {

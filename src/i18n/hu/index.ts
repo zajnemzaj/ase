@@ -16,6 +16,10 @@ export default {
   useArrowDiameters: 'Vesszőátmérő figyelembevétele (vonalérintés)',
   arrowDiametersHint: 'A magasabb gyűrűt érintő vessző azt a gyűrűt kapja.',
   lastCalculation: 'Az utolsó számolás {ms} ms volt.',
+  printFullFace: 'A 40 cm-es lőlapok nyomtatása',
+  printFullFaceHint: 'Kapcsold ki, ha saját hivatalos 40 cm-es lőlapot használtok.',
+  nothingToPrint:
+    'Csak 40 cm-es lőlapok vannak, nincs mit nyomtatni. Kapcsold be a 40 cm-es lőlapok nyomtatását.',
   arrowDiameter: 'Vesszőátmérő',
   arrowShort: 'Vessző ⌀',
   arrowDiameterInvalid: 'Adj meg {min} és {max} mm közötti értéket',
