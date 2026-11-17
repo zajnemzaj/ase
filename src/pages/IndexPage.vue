@@ -146,6 +146,7 @@ async function onSavePdf() {
     // jsPDF is large, it's only loaded when a PDF is saved
     const { createFacesPdf, savePdf } = await import('@/services/pdf');
     const doc = await createFacesPdf(faces, {
+      appTitle: t('appTitle'),
       name: t('pdfName'),
       score: t('pdfScore'),
       diameter: t('pdfDiameter'),

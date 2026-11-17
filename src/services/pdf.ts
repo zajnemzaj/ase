@@ -1,6 +1,8 @@
 import { jsPDF } from 'jspdf';
 import fontUrl from '@expo-google-fonts/roboto/400Regular/Roboto_400Regular.ttf?url';
 
+import logoUrl from '@/assets/logo-ase-print.png?url';
+
 import { faceRings } from '@/simulation/targetFace';
 
 export interface PdfFace {
@@ -14,6 +16,7 @@ export interface PdfFace {
 }
 
 export interface PdfLabels {
+  appTitle: string;
   name: string;
   score: string;
   diameter: string;
@@ -24,6 +27,12 @@ export interface PdfLabels {
 
 // Same place as the legacy PDF: a 200 mm square under the text on A4
 const FACE_BOX = { x: 5, y: 49, size: 200 };
+
+// Printed under the name in the top right corner, the live site's address
+const APP_ADDRESS = 'rebegin.ddns.net/ase';
+
+// Logo, name and address on the top right, level with the face data on the left
+const BRAND = { right: 200, top: 5, logoSize: 12, gap: 2 };
 
 let fontBase64: Promise<string> | undefined;
 
@@ -40,6 +49,27 @@ function loadFont(): Promise<string> {
       return btoa(binary);
     });
   return fontBase64;
+}
+
+let logoBytes: Promise<Uint8Array> | undefined;
+
+function loadLogo(): Promise<Uint8Array> {
+  logoBytes ??= fetch(logoUrl)
+    .then((response) => response.arrayBuffer())
+    .then((buffer) => new Uint8Array(buffer));
+  return logoBytes;
+}
+
+function drawBrand(doc: jsPDF, logo: Uint8Array, appTitle: string) {
+  const logoX = BRAND.right - BRAND.logoSize;
+  doc.addImage(logo, 'PNG', logoX, BRAND.top, BRAND.logoSize, BRAND.logoSize, 'logo');
+  const textX = logoX - BRAND.gap;
+  doc.setFontSize(12);
+  doc.setTextColor('#10695c');
+  doc.text(appTitle, textX, BRAND.top + 5, { align: 'right' });
+  doc.setFontSize(8);
+  doc.setTextColor('#555555');
+  doc.text(APP_ADDRESS, textX, BRAND.top + 10, { align: 'right' });
 }
 
 function drawFace(doc: jsPDF, radius: number) {
@@ -71,9 +101,11 @@ export async function createFacesPdf(faces: PdfFace[], labels: PdfLabels): Promi
   doc.addFileToVFS('Roboto-Regular.ttf', await loadFont());
   doc.addFont('Roboto-Regular.ttf', 'Roboto', 'normal');
   doc.setFont('Roboto', 'normal');
+  const logo = await loadLogo();
 
   faces.forEach((face, i) => {
     if (i > 0) doc.addPage();
+    drawBrand(doc, logo, labels.appTitle);
     doc.setFontSize(9);
     doc.setTextColor('#000000');
     doc.text(`${labels.name}: ${face.name}`, 10, 10);
