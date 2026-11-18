@@ -31,6 +31,7 @@ export default {
   decrease: 'Decrease',
   increase: 'Increase',
   calculate: 'Calculate',
+  recalculate: 'Recalculate',
   savePdf: 'Save PDF',
   fileName: 'File name',
   needTwoArchers: 'Enter a score for at least two archers.',

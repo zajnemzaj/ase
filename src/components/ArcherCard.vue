@@ -56,20 +56,38 @@
       class="q-pt-none result-section"
       :class="{ 'result-outdated': store.resultsOutdated }"
     >
-      <div class="row items-center q-mb-sm text-body2 text-grey-8">
-        <q-icon name="adjust" class="q-mr-xs" />
-        {{ $t('grouping') }}:
-        <span class="text-weight-medium q-ml-xs">
-          {{
-            result.groupingRadius === null
-              ? $t('noResult')
-              : $t('mm', { value: result.groupingRadius * 2 })
-          }}
-        </span>
-        <q-badge v-if="isReference" color="accent" class="q-ml-sm">{{ $t('reference') }}</q-badge>
+      <div class="grouping-row q-mb-sm">
+        <div class="result-dim row items-center text-body2 text-grey-8">
+          <q-icon name="adjust" class="q-mr-xs" />
+          {{ $t('grouping') }}:
+          <span class="text-weight-medium q-ml-xs">
+            {{
+              result.groupingRadius === null
+                ? $t('noResult')
+                : $t('mm', { value: result.groupingRadius * 2 })
+            }}
+          </span>
+          <q-badge v-if="isReference" color="accent" class="q-ml-sm">{{ $t('reference') }}</q-badge>
+        </div>
+        <!-- Floats over the row, so showing it doesn't move anything under a finger -->
+        <q-btn
+          v-if="store.resultsOutdated"
+          flat
+          round
+          dense
+          icon="refresh"
+          color="primary"
+          class="recalc-btn"
+          :loading="store.calculating"
+          :disable="!store.canCalculate"
+          :aria-label="$t('recalculate')"
+          @click="store.calculate()"
+        >
+          <q-tooltip>{{ $t('recalculate') }}</q-tooltip>
+        </q-btn>
       </div>
       <!-- The field stays centered, the reset button sits in the space on its right -->
-      <div class="target-row">
+      <div class="target-row result-dim">
         <NumberStepper
           :model-value="faceDiameter"
           :min="10"
@@ -162,11 +180,26 @@ function setDiameter(value: number | null) {
 
 .result-section {
   container-type: inline-size;
+}
+
+// Everything but the recalculate button is dimmed
+.result-dim {
   transition: opacity 0.2s;
 }
 
-.result-outdated {
+.result-outdated .result-dim {
   opacity: 0.45;
+}
+
+.grouping-row {
+  position: relative;
+}
+
+.recalc-btn {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 // Narrow: the field takes the width left next to the reset button

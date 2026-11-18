@@ -34,6 +34,7 @@ export default {
   decrease: 'Csökkentés',
   increase: 'Növelés',
   calculate: 'Számolás',
+  recalculate: 'Újraszámolás',
   savePdf: 'PDF mentése',
   fileName: 'Fájlnév',
   needTwoArchers: 'Adj meg pontszámot legalább két íjásznak.',
